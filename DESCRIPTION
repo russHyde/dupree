@@ -10,4 +10,14 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Suggests: testthat,
-    lintr
+    knitr,
+    rmarkdown
+Imports: lintr,
+    dplyr,
+    purrr,
+    stringr,
+    tibble,
+    Biostrings,
+    magrittr
+RoxygenNote: 6.0.1
+VignetteBuilder: knitr
