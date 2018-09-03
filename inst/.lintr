@@ -4,4 +4,4 @@ linters: with_defaults(
   object_length_linter(40),
   open_curly_linter = NULL,
   spaces_left_parentheses_linter = NULL
-)
+  )
