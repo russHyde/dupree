@@ -1,3 +1,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^\.lintr$
+^README\.Rmd$
+^README-.*\.png$
+^TODO\.md$
