@@ -99,7 +99,10 @@ test_that("parse_code_blocks: invalid input", {
   # in parse_code_blocks
   exprs <- setNames(
     Map(
-      function(s) list(content = s, parsed_content = ""),
+      function(s) list(
+        content = s,
+        parsed_content = getParseData(parse(text = s))
+      ),
       strs
     ),
     NULL
@@ -118,6 +121,8 @@ test_that("is_source_expressions", {
     info = "Check that I can make a valid source_expressions object"
   )
 })
+
+###############################################################################
 
 test_that("parse_code_blocks: valid input", {
   expect_equal(

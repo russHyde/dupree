@@ -173,6 +173,28 @@ compare_code_blocks <- function(
 
 ###############################################################################
 
+# Workflow for a set of files:
+# - for each file:
+#     - `get_source_expressions` on the file
+#     - drop any entry in `expressions` that stores the whole file
+#     - join the parsed_content blocks by block-number
+# - join the file-level parsed-content blocks by file-name
+# - filter the tokens to non-trivial symbols
+#     - drop any blocks that have fewer non-trivial symbols than some threshold
+# - enumerate the symbols
+# - construct a vector of enumerated-symbols for each code-block in each file
+# - run levenshtein distance between each pair of enumerated code blocks
+# - return the distance-sorted associations between blocks
+
+# Therefore, need class:
+#   - `EnumeratedCodeTable`: tibble containing colnames "file", "block",
+#   "start_line", "enumerated_code"
+#   - the "enumerated_code" column is a list of vectors of integers
+#   - methods: find_best_matches() and find_best_matches_of_single_block()
+
+###############################################################################
+
+
 #' Duplicate detection workflow
 #'
 #' @param        file          Some filename. Should be an R script or
