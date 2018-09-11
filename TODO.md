@@ -1,5 +1,11 @@
 # `dupree` TODO notes
 
+## Functions
+
+- `dupree_classes`: `find_best_matches` and `find_best_matches_of_single_block`
+
+- Filter out blocks that have few non-trivial symbols
+
 
 ## Data-structures
 
@@ -16,26 +22,7 @@
     - if score for (block_a, block_b) is returned, score for (block_b, block_a)
     should not be returned
 
-- Use the `parsed_content` data-frame entry from
-  `lintr::get_source_expressions` to identify non-trivial symbols
-
-- Build an R object that stores file, block, parsed_content, content
-
-    - Add function to filter out all trivial tokens
-    
-- Add function to enumerate all non-trivial tokens
-
-## Multiple files
-
-- Import all files and run dupr across all blocks in all files
-
-
 ## Quicker implementation
-
-- Strip out all "()<- {}[]=" type symbols before alignment
-
-    - eg, filter on the 'token' values (keep SYMBOL,FUNCTION,SYMBOL_FORMALS
-    etc) that are returned by lintr::get_source_expressions::parse_content
 
 - Fastest version:
 

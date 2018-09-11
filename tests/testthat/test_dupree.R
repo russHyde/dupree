@@ -117,7 +117,7 @@ test_that("parse_code_blocks: invalid input", {
 
 test_that("is_source_expressions", {
   expect_true(
-    object = .is_source_expressions(.make_exprs("abc")),
+    object = .is_source_expressions_object(.make_exprs("abc")),
     info = "Check that I can make a valid source_expressions object"
   )
 })

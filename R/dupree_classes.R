@@ -24,6 +24,8 @@ methods::setClass("EnumeratedCodeTable", slots = list(blocks = "tbl_df"))
 
 methods::setValidity("EnumeratedCodeTable", .is_enumerated_code_table)
 
+#' @importFrom   methods       callNextMethod   setMethod   validObject
+#' @importFrom   tibble        tibble
 methods::setMethod(
   "initialize",
   "EnumeratedCodeTable",
@@ -39,7 +41,7 @@ methods::setMethod(
       .Object@blocks <- default_code_table
     }
 
-    validObject(.Object)
+    methods::validObject(.Object)
 
     .Object
   }
