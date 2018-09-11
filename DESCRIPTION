@@ -19,7 +19,8 @@ Imports: lintr,
     tibble,
     Biostrings,
     magrittr,
-    methods
+    methods,
+    stringdist
 RoxygenNote: 6.0.1
 VignetteBuilder: knitr
 Collate:

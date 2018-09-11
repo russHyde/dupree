@@ -192,8 +192,11 @@ dupr <- function(
 
 #' Newer version of the duplicate detection workflow
 #'
+#' @export
+
 dupree <- function(files, ...) {
-  preprocess_code_blocks(files)
+  preprocess_code_blocks(files) %>%
+    find_best_matches()
 
   # TODO: alignment between blocks
 }
