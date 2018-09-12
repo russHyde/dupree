@@ -7,6 +7,18 @@
 
 ###############################################################################
 
+.get_default_annotated_parsed_content <- function() {
+  i0 <- integer(0)
+  c0 <- character(0)
+  l0 <- logical(0)
+
+  tibble::tibble(
+    line1 = i0, col1 = i0, line2 = i0, col2 = i0, id = i0, parent = i0,
+    token = c0, terminal = l0, text = c0, file = c0, block = i0,
+    start_line = i0
+  )
+}
+
 #' Add filename, block-number and start-line for the parsed-content for each
 #'   code block in a given file
 #'
@@ -36,6 +48,10 @@ get_localised_parsed_code_blocks <- function(source_exprs) {
     .has_parsed_content
   )
 
+  if (length(source_blocks) == 0) {
+    return(.get_default_annotated_parsed_content())
+  }
+
   parsed_content <- purrr::map2(
     source_blocks,
     seq_along(source_blocks),
@@ -49,6 +65,7 @@ get_localised_parsed_code_blocks <- function(source_exprs) {
 
 #' @importFrom   dplyr         filter
 filter_code_tokens <- function(df) {
+  # TODO: check for presence of `token` column
   drop_tokens <- c(
     "'-'", "','", "'('", "')'", "'['", "']'", "'{'", "'}'",
     "'$'", "'@'", "AND2", "NS_GET", "expr", "COMMENT",
@@ -61,6 +78,7 @@ filter_code_tokens <- function(df) {
 
 #' @importFrom   dplyr         mutate_
 enumerate_code_symbols <- function(df) {
+  # TODO: check for `text` column
   df %>%
     dplyr::mutate_(symbol_enum = ~ as.integer(factor(text)))
 }

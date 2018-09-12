@@ -2,10 +2,20 @@
 
 ## Functions
 
-- `dupree_classes`: `find_best_matches` and `find_best_matches_of_single_block`
+- `dupree_classes`: `find_best_matches_of_single_block`
 
 - Filter out blocks that have few non-trivial symbols
 
+## Tests
+
+- #2 dupree works for `*.Rmd` files that have no R code blocks
+
+    - stick `empty.Rmd` and `only_text.Rmd` into tests/testthat
+
+    - copy in code from current `lintr` to count the number of code-blocks in
+      a .Rmd file
+
+    - note that `lintr` is MIT as well.
 
 ## Data-structures
 
@@ -17,22 +27,23 @@
 
 - Want:
 
-    - scores should be [file_a, file_b, line_a, line_b, score]
-    
-    - if score for (block_a, block_b) is returned, score for (block_b, block_a)
-    should not be returned
+    - scores should be [`file_a`, `file_b`, `line_a`, `line_b`, `score`]
+
+    - if score for (`block_a`, `block_b`) is returned, score for (`block_b`,
+    `block_a`) should not be returned
 
 ## Quicker implementation
 
 - Fastest version:
 
-    - convert to frequency-vector of symbols-used (eg, tidytext / tf_idf
+    - convert to frequency-vector of symbols-used (eg, tidytext / `tf_idf`
     analysis) and just determine distances between block-contents
 
 - Alignment version:
 
     - convert the symbols-used into a vector of integers (corresponding to
     factor levels)
-    
-    - run Levenshtein distance on the vector-pairs (using stringdist::seq_sim;
-    note that stringdist is required for lintr/available)
+
+    - run Levenshtein distance on the vector-pairs (using 
+    `stringdist::seq_sim`; note that stringdist is required for
+    `lintr/available`)
