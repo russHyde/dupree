@@ -20,6 +20,8 @@ test_that("get_localised_parsed_code_blocks", {
   )
 })
 
+###############################################################################
+
 test_that("Number of code blocks in imported files", {
   # For empty files, an empty data-frame should be returned by
   # `import_parsed_code_blocks`

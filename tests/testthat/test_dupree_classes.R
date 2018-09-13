@@ -66,7 +66,6 @@ test_that("EnumeratedCodeTable: find_best_match_for_single_block", {
 
 test_that("EnumeratedCodeTable: find_best_matches", {
   # TODO:
-  # - if there's 1 or fewer blocks, return an empty data-frame
   # - return at most 1 best-hit for each block
 
   empty_results <- tibble::tibble(
