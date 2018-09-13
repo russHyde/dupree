@@ -8,26 +8,11 @@
 
 ## Tests
 
-- #2 dupree works for `*.Rmd` files that have no R code blocks
-
-    - stick `empty.Rmd` and `only_text.Rmd` into tests/testthat
-
-    - copy in code from current `lintr` to count the number of code-blocks in
-      a .Rmd file
-
-    - note that `lintr` is MIT as well.
+- Tests for number of symbols in each block
 
 ## Data-structures
 
-- How should the results be returned?
-
-- Current datastructure: list(scores, blocks)
-
-    - scores is tibble[score, subject, pattern]
-
-- Want:
-
-    - scores should be [`file_a`, `file_b`, `line_a`, `line_b`, `score`]
+- Suggestion:
 
     - if score for (`block_a`, `block_b`) is returned, score for (`block_b`,
     `block_a`) should not be returned
@@ -41,9 +26,6 @@
 
 - Alignment version:
 
-    - convert the symbols-used into a vector of integers (corresponding to
-    factor levels)
-
-    - run Levenshtein distance on the vector-pairs (using 
+    - run (various) distance functions on the vector-pairs (using
     `stringdist::seq_sim`; note that stringdist is required for
     `lintr/available`)
