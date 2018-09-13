@@ -26,8 +26,6 @@
 
 methods::setClass("EnumeratedCodeTable", slots = list(blocks = "tbl_df"))
 
-
-
 methods::setValidity("EnumeratedCodeTable", .is_enumerated_code_table)
 
 #' @importFrom   methods       callNextMethod   setMethod   validObject
@@ -108,7 +106,7 @@ methods::setGeneric("find_best_matches", function(x, ...) {
 
 methods::setMethod(
   "find_best_matches",
-  signature("EnumeratedCodeTable"),
+  methods::signature("EnumeratedCodeTable"),
   function(x, ...) {
     blocks <- x@blocks
     enum_codes <- x@blocks$enumerated_code
