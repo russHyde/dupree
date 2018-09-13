@@ -1,0 +1,10 @@
+---
+---
+
+This is an Rmarkdown file, but the code blocks it contains are not interpreted
+by R.
+
+```{python}
+print("Hello")
+print([1, 2, 3, 4])
+```

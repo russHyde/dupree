@@ -53,9 +53,37 @@ test_that("Number of code blocks in imported files", {
       "comment-only .R file should provide no code-blocks: preprocess workflow"
     )
   )
-  # Empty .Rmd files
+  # Empty .Rmd files:
   # - No content
+  empty_rmd <- file.path("empty.Rmd")
+  expect_true(
+    nrow(import_parsed_code_blocks(empty_rmd)) == 0,
+    info = "empty .Rmd file should import no code-blocks"
+  )
   # - Only header
+  header_rmd <- file.path("header_only.Rmd")
+  expect_true(
+    nrow(import_parsed_code_blocks(header_rmd)) == 0,
+    info = "header-only .Rmd file should import no code-blocks"
+  )
   # - Only text
+  text_rmd <- file.path("text_only.Rmd")
+  expect_true(
+    nrow(import_parsed_code_blocks(text_rmd)) == 0,
+    info = "text-only .Rmd file should import no code-blocks"
+  )
+
   # - Some non-R blocks
+  skip(
+    # All subsequent tests in this `test_that` block will not be ran
+    paste(
+      "`dupree` is not yet implemented for R-markdown files that contain",
+      "non-R code blocks"
+    )
+  )
+  non_r_rmd <- file.path("non_r_blocks.Rmd")
+  expect_true(
+    nrow(import_parsed_code_blocks(non_r_rmd)) == 0,
+    info = ".Rmd with only non-R blocks should import not code-blocks"
+  )
 })

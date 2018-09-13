@@ -27,4 +27,5 @@ Collate:
     'dupree_data_validity.R'
     'dupree.R'
     'dupree_classes.R'
+    'dupree_number_of_code_blocks.R'
     'dupree_code_enumeration.R'

@@ -92,15 +92,36 @@ summarise_enumerated_blocks <- function(df) {
 
 ###############################################################################
 
+#' @importFrom   tools         file_ext
+#'
+is_plain_r_file <- function(file) {
+  tools::file_ext(file) %in% c("r", "R")
+}
+
+#' @include      dupree_number_of_code_blocks.R
+#'
+get_source_expressions <- function(file) {
+  num_blocks <- count_code_blocks(file)
+
+  if (num_blocks > 0 || is_plain_r_file(file)) {
+    lintr::get_source_expressions(file)
+  } else {
+    list()
+  }
+}
+
 #' @importFrom   dplyr         bind_rows
 #' @importFrom   lintr         get_source_expressions
 #' @importFrom   purrr         map
+#'
 import_parsed_code_blocks <- function(files) {
   files %>%
-    purrr::map(lintr::get_source_expressions) %>%
+    purrr::map(get_source_expressions) %>%
     purrr::map(get_localised_parsed_code_blocks) %>%
     dplyr::bind_rows()
 }
+
+###############################################################################
 
 #' @importFrom   methods       new
 #' @include      dupree_classes.R

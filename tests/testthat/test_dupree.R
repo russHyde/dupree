@@ -100,9 +100,9 @@ test_that("parse_code_blocks: invalid input", {
   exprs <- setNames(
     Map(
       function(s) list(
-        content = s,
-        parsed_content = getParseData(parse(text = s))
-      ),
+          content = s,
+          parsed_content = getParseData(parse(text = s))
+        ),
       strs
     ),
     NULL
