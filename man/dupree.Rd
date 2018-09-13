@@ -4,7 +4,7 @@
 \alias{dupree}
 \title{Newer version of the duplicate detection workflow}
 \usage{
-dupree(files, ...)
+dupree(files, min_block_size = 5, ...)
 }
 \description{
 Newer version of the duplicate detection workflow

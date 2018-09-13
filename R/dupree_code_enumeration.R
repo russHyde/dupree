@@ -64,12 +64,18 @@ get_localised_parsed_code_blocks <- function(source_exprs) {
 }
 
 #' @importFrom   dplyr         filter
-filter_code_tokens <- function(df) {
+#'
+remove_trivial_code_symbols <- function(df) {
   # TODO: check for presence of `token` column
+  .quote_wrap <- function(x) {
+    gsub(pattern = "^(.*)$", replacement = "'\\1'", x)
+  }
+
   drop_tokens <- c(
-    "'-'", "','", "'('", "')'", "'['", "']'", "'{'", "'}'",
-    "'$'", "'@'", "AND2", "NS_GET", "expr", "COMMENT",
-    "LEFT_ASSIGN", "LBB"
+    .quote_wrap(
+      c("-", "+", ",", "(", ")", "[", "]", "{", "}", "$", "@", ":")
+    ),
+    "AND2", "NS_GET", "expr", "COMMENT", "LEFT_ASSIGN", "LBB", "EQ_SUB"
   )
 
   df %>%
@@ -77,6 +83,7 @@ filter_code_tokens <- function(df) {
 }
 
 #' @importFrom   dplyr         mutate_
+#'
 enumerate_code_symbols <- function(df) {
   # TODO: check for `text` column
   df %>%
@@ -84,10 +91,14 @@ enumerate_code_symbols <- function(df) {
 }
 
 #' @importFrom   dplyr         group_by_   summarise_
+#'
 summarise_enumerated_blocks <- function(df) {
   df %>%
     dplyr::group_by_(~ file, ~ block, ~ start_line) %>%
-    dplyr::summarise_(enumerated_code = ~ list(c(symbol_enum)))
+    dplyr::summarise_(
+      enumerated_code = ~ list(c(symbol_enum)),
+      block_size = "n()"
+    )
 }
 
 ###############################################################################
@@ -98,6 +109,7 @@ is_plain_r_file <- function(file) {
   tools::file_ext(file) %in% c("r", "R")
 }
 
+#' @importFrom   lintr         get_source_expressions
 #' @include      dupree_number_of_code_blocks.R
 #'
 get_source_expressions <- function(file) {
@@ -110,28 +122,44 @@ get_source_expressions <- function(file) {
   }
 }
 
+import_parsed_code_blocks_from_single_file <- function(file) {
+  file %>%
+    get_source_expressions() %>%
+    get_localised_parsed_code_blocks()
+}
+
 #' @importFrom   dplyr         bind_rows
-#' @importFrom   lintr         get_source_expressions
 #' @importFrom   purrr         map
 #'
 import_parsed_code_blocks <- function(files) {
   files %>%
-    purrr::map(get_source_expressions) %>%
-    purrr::map(get_localised_parsed_code_blocks) %>%
+    purrr::map(import_parsed_code_blocks_from_single_file) %>%
     dplyr::bind_rows()
+}
+
+tokenize_code_blocks <- function(block_df) {
+  block_df %>%
+    remove_trivial_code_symbols() %>%
+    enumerate_code_symbols() %>%
+    summarise_enumerated_blocks()
 }
 
 ###############################################################################
 
+#' @param        files         A set of *.R or *.Rmd files over which dupree is
+#'   to perform duplicate-identification
+#' @param        min_block_size   An integer >= 1. How many non-trivial symbols
+#'   must be present in a code-block if that block is to be used in
+#'   code-duplication detection.
+#'
 #' @importFrom   methods       new
 #' @include      dupree_classes.R
 #'
-preprocess_code_blocks <- function(files) {
+preprocess_code_blocks <- function(files, min_block_size = 5) {
   blocks <- files %>%
     import_parsed_code_blocks() %>%
-    filter_code_tokens() %>%
-    enumerate_code_symbols() %>%
-    summarise_enumerated_blocks()
+    tokenize_code_blocks() %>%
+    filter(block_size >= min_block_size)
 
   methods::new("EnumeratedCodeTable", blocks)
 }

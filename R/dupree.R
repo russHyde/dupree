@@ -194,9 +194,7 @@ dupr <- function(
 #'
 #' @export
 
-dupree <- function(files, ...) {
-  preprocess_code_blocks(files) %>%
+dupree <- function(files, min_block_size = 5, ...) {
+  preprocess_code_blocks(files, min_block_size) %>%
     find_best_matches()
-
-  # TODO: alignment between blocks
 }

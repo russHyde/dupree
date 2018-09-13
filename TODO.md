@@ -8,8 +8,6 @@
 
 ## Tests
 
-- Tests for number of symbols in each block
-
 ## Data-structures
 
 - Suggestion:
