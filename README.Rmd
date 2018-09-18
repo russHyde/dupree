@@ -12,6 +12,13 @@ knitr::opts_chunk$set(
 )
 ```
 
+[![Build Status](
+  https://travis-ci.org/russHyde/dupree.svg?branch=master
+  )
+](
+  https://travis-ci.org/russHyde/dupree
+)
+
 # dupree
 
 The goal of `dupree` is to ...
