@@ -20,7 +20,8 @@ Imports: lintr,
     Biostrings,
     magrittr,
     methods,
-    stringdist
+    stringdist,
+    tidyr
 RoxygenNote: 6.0.1
 VignetteBuilder: knitr
 Collate:
