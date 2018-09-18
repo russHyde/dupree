@@ -3,3 +3,7 @@
 language: R
 sudo: false
 cache: packages
+
+# remove this when `dupr` and related code is deleted
+
+use_bioc: true

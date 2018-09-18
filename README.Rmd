@@ -12,7 +12,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-[![Build Status](
+[![Travis-CI Build Status](
   https://travis-ci.org/russHyde/dupree.svg?branch=master
   )
 ](
