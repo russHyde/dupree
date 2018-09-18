@@ -21,7 +21,21 @@ knitr::opts_chunk$set(
 
 # dupree
 
-The goal of `dupree` is to ...
+The goal of `dupree` is to identify chunks / blocks of highly duplicated code within a set of R scripts.
+
+A very lightweight approach is used:
+
+- The user provides a set of `*.R` and/or `*.Rmd` files;
+
+- All R-code in the user-provided files is read and code-blocks are identified;
+
+- The non-trivial symbols from each code-block are retained (for instance, really common symbols like `<-`, `,`, `+`, `(` are dropped);
+
+- Similarity between different blocks is calculated using stringdist::seq_sim by longest-common-subsequence (symbol-identity is at whole-word level - so "my_data", "my_Data", "my.data" and "myData" are not considered to be identical in the calculation - and all non-trivial symbols have equal weight in the similarity calculation);
+
+- Code-blocks pairs (both between and within the files) are returned in order of highest similarity
+
+To prevent the results being dominated by high-identity blocks containing very few symbols (eg, `library(dplyr)`) the user can specify a `min_block_size`. Any code-block containing at least this many non-trivial symbols will be kept.
 
 ## Installation
 
@@ -38,4 +52,7 @@ This is a basic example which shows you how to solve a common problem:
 
 ```{r example}
 ## basic example code
+library(dupree)
+files <- dir(pattern = "*.R(md)*$", recursive = TRUE)
+dupree(files, min_block_size = 20)
 ```
