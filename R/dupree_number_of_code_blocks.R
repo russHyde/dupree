@@ -8,7 +8,8 @@
 # `extract_r_source` is used to pull out blocks of R code from an R-markdown
 # script. `dupree` uses calls to `lintr` to do this. But, the current version
 # of `lintr` that is on CRAN contains a bug (that has been fixed in the dev
-# version of `lintr` but has not been passed to CRAN yet: Sept 2018)
+# version of `lintr` but has not been passed to CRAN yet: Sept 2018) such that
+# files that do not contain any code blocks are considered to be malformed.
 #
 # We copied this code into here so that we can determine how many code-blocks
 # are present in an R-markdown / R script before we parse the code-blocks out

@@ -4,8 +4,6 @@
 
 - `dupree_classes`: `find_best_matches_of_single_block`
 
-- Filter out blocks that have few non-trivial symbols
-
 ## Tests
 
 ## Data-structures
