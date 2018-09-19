@@ -8,3 +8,6 @@ cache: packages
 
 bioc_required: true
 use_bioc: true
+
+env:
+- LINTR_COMMENT_BOT=true
