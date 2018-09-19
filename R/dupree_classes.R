@@ -4,9 +4,7 @@
 
 ###############################################################################
 
-# Class definition / initialised / validator: `EnumeratedCodeTable``
-
-###############################################################################
+# Class definition: `EnumeratedCodeTable`
 
 methods::setClass("EnumeratedCodeTable", slots = list(blocks = "tbl_df"))
 
