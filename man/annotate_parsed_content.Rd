@@ -7,6 +7,16 @@
 \usage{
 annotate_parsed_content(parsed_content, file, block, start_line)
 }
+\arguments{
+\item{parsed_content}{The parsed-content for a specific code-block
+from running get_source_expressions on a file.}
+
+\item{file}{The filename for the content.}
+
+\item{block}{The block from which the content came.}
+
+\item{start_line}{The start-line of the block in the filename.}
+}
 \description{
 Add filename, block-number and start-line for the parsed-content for each
   code block in a given file

@@ -22,6 +22,12 @@
 #' Add filename, block-number and start-line for the parsed-content for each
 #'   code block in a given file
 #'
+#' @param        parsed_content   The parsed-content for a specific code-block
+#'   from running get_source_expressions on a file.
+#' @param        file             The filename for the content.
+#' @param        block            The block from which the content came.
+#' @param        start_line       The start-line of the block in the filename.
+#'
 #' @importFrom   dplyr         mutate
 #' @include      dupree_data_validity.R
 #'
@@ -37,6 +43,9 @@ annotate_parsed_content <- function(parsed_content, file, block, start_line) {
 #' Convert a list of source_expressions to a data-frame that contains the
 #'   parsed-content from each source expression, and indicates the file,
 #'   block-number and start-line for that source expression
+#'
+#' @param        source_exprs   A list of source-expressions, obtained from
+#'   lintr::get_source_expressions.
 #'
 #' @importFrom   dplyr         bind_rows
 #' @importFrom   purrr         keep   map2

@@ -8,6 +8,10 @@
 \usage{
 get_localised_parsed_code_blocks(source_exprs)
 }
+\arguments{
+\item{source_exprs}{A list of source-expressions, obtained from
+lintr::get_source_expressions.}
+}
 \description{
 Convert a list of source_expressions to a data-frame that contains the
   parsed-content from each source expression, and indicates the file,

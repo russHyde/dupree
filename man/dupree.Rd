@@ -6,6 +6,19 @@
 \usage{
 dupree(files, min_block_size = 5, ...)
 }
+\arguments{
+\item{files}{A set of files over which code-duplication
+should be measured.}
+
+\item{min_block_size}{`dupree` uses a notion of non-trivial
+symbols.  These are the symbols / code-words that remain after filtering
+out really common symbols like `<-`, `,`, etc. After filtering out these
+symbols from each code-block, only those blocks containing at least
+`min_block_size` symbols are used in the inter-block code-duplication
+measurement.}
+
+\item{...}{Unused at present.}
+}
 \description{
 Newer version of the duplicate detection workflow
 }
