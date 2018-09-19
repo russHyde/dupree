@@ -21,6 +21,8 @@
 #'
 #' @param        x             Any data structure
 #'
+#' @importFrom   purrr         map_lgl
+#'
 #' @return       Boolean
 #'
 .is_source_expressions_object <- function(x) {
@@ -30,7 +32,7 @@
   # - and each `expressions` entry should have a `content` entry
   is.list(x) &&
     all(c("expressions", "error", "lines") %in% names(x)) &&
-    all(sapply(x[["expressions"]], .has_content))
+    all(purrr::map_lgl(x[["expressions"]], .has_content))
 }
 
 #' Checks if a data-structure conforms to the structure of a `parsed_content`

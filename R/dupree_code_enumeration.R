@@ -161,6 +161,7 @@ tokenize_code_blocks <- function(block_df) {
 #'   must be present in a code-block if that block is to be used in
 #'   code-duplication detection.
 #'
+#' @importFrom   dplyr         filter_
 #' @importFrom   methods       new
 #' @include      dupree_classes.R
 #'
@@ -168,7 +169,7 @@ preprocess_code_blocks <- function(files, min_block_size = 5) {
   blocks <- files %>%
     import_parsed_code_blocks() %>%
     tokenize_code_blocks() %>%
-    filter(block_size >= min_block_size)
+    filter_(~ block_size >= min_block_size)
 
   methods::new("EnumeratedCodeTable", blocks)
 }

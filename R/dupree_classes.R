@@ -4,9 +4,7 @@
 
 ###############################################################################
 
-# Class definition / initialised / validator: `EnumeratedCodeTable``
-
-###############################################################################
+# Class definition: `EnumeratedCodeTable`
 
 methods::setClass("EnumeratedCodeTable", slots = list(blocks = "tbl_df"))
 
@@ -115,6 +113,12 @@ methods::setMethod(
 }
 
 #' All against all search
+#'
+#' @importFrom   dplyr         arrange_   desc
+#' @importFrom   purrr         map_df
+#' @importFrom   stringdist    seq_sim
+#' @importFrom   tibble        tibble
+#'
 .find_indexes_of_best_matches <- function(enum_codes, method = "lcs", ...) {
   empty_result <- tibble::tibble(
     index_a = integer(0), index_b = integer(0), score = numeric(0)
@@ -135,7 +139,9 @@ methods::setMethod(
   )
 
   scores %>%
-    dplyr::arrange(desc(score), index_a, index_b)
+    dplyr::arrange_(
+      ~ dplyr::desc(score), ~ index_a, ~ index_b
+    )
 }
 
 ###############################################################################
