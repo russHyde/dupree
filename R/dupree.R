@@ -208,3 +208,5 @@ dupree <- function(files, min_block_size = 5, ...) {
   preprocess_code_blocks(files, min_block_size) %>%
     find_best_matches()
 }
+
+###############################################################################

@@ -4,6 +4,16 @@
 
 ###############################################################################
 
+# Class definition / initialised / validator: `EnumeratedCodeTable``
+
+###############################################################################
+
+methods::setClass("EnumeratedCodeTable", slots = list(blocks = "tbl_df"))
+
+###############################################################################
+
+# `EnumeratedCodeTable` validation
+
 .is_enumerated_code_table <- function(object) {
   required_cols <- c("file", "block", "start_line", "enumerated_code")
   observed_cols <- colnames(object@blocks)
@@ -18,15 +28,9 @@
   }
 }
 
-###############################################################################
-
-# Class definition / initialised / validator: `EnumeratedCodeTable``
-
-###############################################################################
-
-methods::setClass("EnumeratedCodeTable", slots = list(blocks = "tbl_df"))
-
 methods::setValidity("EnumeratedCodeTable", .is_enumerated_code_table)
+
+###############################################################################
 
 #' @importFrom   methods       callNextMethod   setMethod   validObject
 #' @importFrom   tibble        tibble
@@ -64,6 +68,40 @@ methods::setMethod(
 # - d((1, 2, 3, 4), (1, 4, 5, 6)) = 4; s(..., ...) = 1 - 4 / 8
 # - we use lcs because it's simple to explain
 
+methods::setGeneric("find_best_matches", function(x, ...) {
+  methods::standardGeneric("find_best_matches")
+})
+
+methods::setMethod(
+  "find_best_matches",
+  methods::signature("EnumeratedCodeTable"),
+  function(x, ...) {
+    blocks <- x@blocks
+    enum_codes <- x@blocks$enumerated_code
+    index_matches <- .find_indexes_of_best_matches(enum_codes, ...)
+    details_a <- blocks[index_matches$index_a, ]
+    details_b <- blocks[index_matches$index_b, ]
+
+    score <- index_matches$score
+
+    tibble::tibble(
+      file_a = details_a$file,
+      file_b = details_b$file,
+      block_a = details_a$block,
+      block_b = details_b$block,
+      line_a = details_a$start_line,
+      line_b = details_b$start_line,
+      score = score
+    )
+  }
+)
+
+###############################################################################
+
+# Related Functions
+
+###############################################################################
+
 #' One against all search
 .one_against_all <- function(subject_index, enum_codes, sim_func) {
   subject <- enum_codes[subject_index]
@@ -100,30 +138,4 @@ methods::setMethod(
     dplyr::arrange(desc(score), index_a, index_b)
 }
 
-methods::setGeneric("find_best_matches", function(x, ...) {
-  methods::standardGeneric("find_best_matches")
-})
-
-methods::setMethod(
-  "find_best_matches",
-  methods::signature("EnumeratedCodeTable"),
-  function(x, ...) {
-    blocks <- x@blocks
-    enum_codes <- x@blocks$enumerated_code
-    index_matches <- .find_indexes_of_best_matches(enum_codes, ...)
-    details_a <- blocks[index_matches$index_a, ]
-    details_b <- blocks[index_matches$index_b, ]
-
-    score <- index_matches$score
-
-    tibble::tibble(
-      file_a = details_a$file,
-      file_b = details_b$file,
-      block_a = details_a$block,
-      block_b = details_b$block,
-      line_a = details_a$start_line,
-      line_b = details_b$start_line,
-      score = score
-    )
-  }
-)
+###############################################################################
