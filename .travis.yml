@@ -4,10 +4,5 @@ language: R
 sudo: false
 cache: packages
 
-# remove this when `dupr` and related code is deleted
-
-bioc_required: true
-use_bioc: true
-
 env:
 - LINTR_COMMENT_BOT=true

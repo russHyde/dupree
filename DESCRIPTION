@@ -6,27 +6,27 @@ Author: Russ Hyde, University of Glasgow
 Maintainer: Russ Hyde <yourself@somewhere.net>
 Description: `dupree` helps identify code blocks that have a high level
   of duplication within a set of R files.
+URL: https://github.com/russHyde/dupree
+BugReports: https://github.com/russHyde/dupree/issues
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Suggests: testthat,
     knitr,
-    rmarkdown
+    rmarkdown,
+    tidyr
 Imports: lintr,
     dplyr,
     purrr,
-    stringr,
     tibble,
-    Biostrings,
     magrittr,
     methods,
-    stringdist,
-    tidyr
+    stringdist
 RoxygenNote: 6.0.1
 VignetteBuilder: knitr
 Collate:
-    'dupree_data_validity.R'
     'dupree.R'
     'dupree_classes.R'
     'dupree_number_of_code_blocks.R'
+    'dupree_data_validity.R'
     'dupree_code_enumeration.R'
