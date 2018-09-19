@@ -10,13 +10,11 @@ context("Tests for classes in `dupree` package")
 #' @importFrom   tidyr         unnest
 #'
 expect_equal_listy_tbl <- function(object, expected, ...) {
-  if (requireNamespace("tidyr", quietly = TRUE)) {
-    expect_equal(
-      object = tidyr::unnest(object),
-      expected = tidyr::unnest(expected),
-      ...
-    )
-  }
+  expect_equal(
+    object = tidyr::unnest(object),
+    expected = tidyr::unnest(expected),
+    ...
+  )
 }
 
 ###############################################################################
