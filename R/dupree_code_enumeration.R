@@ -133,6 +133,7 @@ get_source_expressions <- function(file) {
 
 #' import_parsed_code_blocks_from_one_file
 #'
+#' @noRd
 #' @importFrom   dplyr         filter_
 #'
 import_parsed_code_blocks_from_one_file <- function(file) {
