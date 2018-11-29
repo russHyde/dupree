@@ -131,10 +131,15 @@ get_source_expressions <- function(file) {
   }
 }
 
-import_parsed_code_blocks_from_single_file <- function(file) {
+#' import_parsed_code_blocks_from_one_file
+#'
+#' @importFrom   dplyr         filter_
+#'
+import_parsed_code_blocks_from_one_file <- function(file) {
   file %>%
     get_source_expressions() %>%
-    get_localised_parsed_code_blocks()
+    get_localised_parsed_code_blocks() %>%
+    dplyr::filter_(~ !token %in% "COMMENT")
 }
 
 #' @importFrom   dplyr         bind_rows
@@ -142,7 +147,7 @@ import_parsed_code_blocks_from_single_file <- function(file) {
 #'
 import_parsed_code_blocks <- function(files) {
   files %>%
-    purrr::map(import_parsed_code_blocks_from_single_file) %>%
+    purrr::map(import_parsed_code_blocks_from_one_file) %>%
     dplyr::bind_rows()
 }
 
