@@ -19,6 +19,12 @@ knitr::opts_chunk$set(
   https://travis-ci.org/russHyde/dupree
 )
 
+[![Coverage Status](
+  https://img.shields.io/codecov/c/github/russHyde/dupree/master.svg
+)](
+  https://codecov.io/github/russHyde/dupree?branch=master
+)
+
 # dupree
 
 The goal of `dupree` is to identify chunks / blocks of highly duplicated code
