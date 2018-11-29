@@ -4,7 +4,7 @@
 \alias{dupree}
 \title{Newer version of the duplicate detection workflow}
 \usage{
-dupree(files, min_block_size = 5, ...)
+dupree(files, min_block_size = 20, ...)
 }
 \arguments{
 \item{files}{A set of files over which code-duplication

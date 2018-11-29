@@ -4,7 +4,8 @@
 \alias{dupree_dir}
 \title{`dupree_dir` - run duplicate-code detection over all R-files in a directory}
 \usage{
-dupree_dir(path, min_block_size = 5, filter = NULL, ..., recursive = TRUE)
+dupree_dir(path, min_block_size = 20, filter = NULL, ...,
+  recursive = TRUE)
 }
 \arguments{
 \item{path}{A directory. All files in this directory that
