@@ -39,7 +39,7 @@
 #'
 #' @export
 
-dupree <- function(files, min_block_size = 5, ...) {
+dupree <- function(files, min_block_size = 20, ...) {
   preprocess_code_blocks(files, min_block_size) %>%
     find_best_matches()
 }
@@ -67,7 +67,7 @@ dupree <- function(files, min_block_size = 5, ...) {
 #' @export
 
 dupree_dir <- function(path,
-                       min_block_size = 5,
+                       min_block_size = 20,
                        filter = NULL,
                        ...,
                        recursive = TRUE) {
@@ -95,7 +95,7 @@ dupree_dir <- function(path,
 #' @export
 
 dupree_package <- function(package,
-                           min_block_size = 5) {
+                           min_block_size = 20) {
   dupree_dir(package, min_block_size, filter = paste0(package, "/R/"))
 }
 

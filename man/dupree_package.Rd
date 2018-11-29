@@ -5,7 +5,7 @@
 \title{`dupree_package` - run duplicate-code detection over all files in a
 package's `R` directory}
 \usage{
-dupree_package(package, min_block_size = 5)
+dupree_package(package, min_block_size = 20)
 }
 \arguments{
 \item{package}{The name or path to the package that is to be
