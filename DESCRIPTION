@@ -14,7 +14,8 @@ LazyData: true
 Suggests: testthat,
     knitr,
     rmarkdown,
-    tidyr
+    tidyr,
+    covr
 Imports: lintr,
     dplyr,
     purrr,

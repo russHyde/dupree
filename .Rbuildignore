@@ -5,3 +5,4 @@
 ^README-.*\.png$
 ^TODO\.md$
 ^\.travis\.yml$
+^codecov\.yml$
