@@ -2,7 +2,7 @@
 output: github_document
 ---
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
+<!-- README.md is generated from README.Rmd. Please edit the latter -->
 
 ```{r, echo = FALSE}
 knitr::opts_chunk$set(
@@ -21,7 +21,8 @@ knitr::opts_chunk$set(
 
 # dupree
 
-The goal of `dupree` is to identify chunks / blocks of highly duplicated code within a set of R scripts.
+The goal of `dupree` is to identify chunks / blocks of highly duplicated code
+within a set of R scripts.
 
 A very lightweight approach is used:
 
@@ -29,13 +30,21 @@ A very lightweight approach is used:
 
 - All R-code in the user-provided files is read and code-blocks are identified;
 
-- The non-trivial symbols from each code-block are retained (for instance, really common symbols like `<-`, `,`, `+`, `(` are dropped);
+- The non-trivial symbols from each code-block are retained (for instance,
+really common symbols like `<-`, `,`, `+`, `(` are dropped);
 
-- Similarity between different blocks is calculated using stringdist::seq_sim by longest-common-subsequence (symbol-identity is at whole-word level - so "my_data", "my_Data", "my.data" and "myData" are not considered to be identical in the calculation - and all non-trivial symbols have equal weight in the similarity calculation);
+- Similarity between different blocks is calculated using stringdist::seq_sim
+by longest-common-subsequence (symbol-identity is at whole-word level - so
+"my_data", "my_Data", "my.data" and "myData" are not considered to be identical
+in the calculation - and all non-trivial symbols have equal weight in the
+similarity calculation);
 
-- Code-blocks pairs (both between and within the files) are returned in order of highest similarity
+- Code-blocks pairs (both between and within the files) are returned in order
+of highest similarity
 
-To prevent the results being dominated by high-identity blocks containing very few symbols (eg, `library(dplyr)`) the user can specify a `min_block_size`. Any code-block containing at least this many non-trivial symbols will be kept.
+To prevent the results being dominated by high-identity blocks containing very
+few symbols (eg, `library(dplyr)`) the user can specify a `min_block_size`. Any
+code-block containing at least this many non-trivial symbols will be kept.
 
 ## Installation
 
@@ -55,4 +64,17 @@ This is a basic example which shows you how to solve a common problem:
 library(dupree)
 files <- dir(pattern = "*.R(md)*$", recursive = TRUE)
 dupree(files, min_block_size = 20)
+```
+
+Note that you can do something similar using the functions `dupree_dir` and
+(if you are analysing a package) `dupree_package`.
+
+```{r}
+# Analyse all R files except those in the tests directory:
+dupree_dir(".", min_block_size = 20, filter = "tests", invert = TRUE)
+```
+
+```{r}
+# Analyse all R source code in the package (ignoring the tests directory)
+dupree_package(".", min_block_size = 20)
 ```

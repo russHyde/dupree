@@ -45,3 +45,58 @@ dupree <- function(files, min_block_size = 5, ...) {
 }
 
 ###############################################################################
+
+#' `dupree_dir` - run duplicate-code detection over all R-files in a directory
+#'
+#' @inheritParams   dupree
+#'
+#' @param        path          A directory. All files in this directory that
+#' have a ".R", ".r" or ".Rmd" extension will be checked for code duplication.
+#'
+#' @param        filter        A pattern for use in grep - this is used to
+#' keep only particular files: eg, filter = "classes" would compare files with
+#' `classes` in the filename
+#'
+#' @param        ...           Further arguments for grep. For example,
+#' `filter = "test", invert = TRUE` would disregard all files with `test` in
+#' the file-path.
+#'
+#' @param       recursive     Should we consider files in subdirectories as
+#' well?
+#'
+#' @export
+
+dupree_dir <- function(path,
+                       min_block_size = 5,
+                       filter = NULL,
+                       ...,
+                       recursive = TRUE) {
+  files <- dir(
+    path, pattern = ".*(.R|.r|.Rmd)$", full.names = TRUE, recursive = recursive
+  )
+  keep_files <- if(is.null(filter)) {
+    files
+  } else {
+    files[grep(pattern = filter, x = files, ...)]
+  }
+  dupree(keep_files, min_block_size)
+}
+
+###############################################################################
+
+#' `dupree_package` - run duplicate-code detection over all files in a
+#' package's `R` directory
+#'
+#' @inheritParams   dupree
+#'
+#' @param        package       The name or path to the package that is to be
+#' checked.
+#'
+#' @export
+
+dupree_package <- function(package,
+                           min_block_size = 5) {
+  dupree_dir(package, min_block_size, filter = paste0(package, "/R/"))
+}
+
+###############################################################################
