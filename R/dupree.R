@@ -72,9 +72,10 @@ dupree_dir <- function(path,
                        ...,
                        recursive = TRUE) {
   files <- dir(
-    path, pattern = ".*(.R|.r|.Rmd)$", full.names = TRUE, recursive = recursive
+    path,
+    pattern = ".*(.R|.r|.Rmd)$", full.names = TRUE, recursive = recursive
   )
-  keep_files <- if(is.null(filter)) {
+  keep_files <- if (is.null(filter)) {
     files
   } else {
     files[grep(pattern = filter, x = files, ...)]
@@ -96,7 +97,9 @@ dupree_dir <- function(path,
 
 dupree_package <- function(package,
                            min_block_size = 20) {
+  # nolint start
   dupree_dir(package, min_block_size, filter = paste0(package, "/R/"))
+  # nolint end
 }
 
 ###############################################################################
