@@ -113,3 +113,29 @@ test_that("Filtering by the number of symbols in the code-blocks", {
     )
   )
 })
+
+###############################################################################
+
+test_that("summarise_enumerated_blocks", {
+  input <- tibble::tibble(
+    line1 = 1L, col1 = 1L, line2 = 1L, col2 = 7L, id = 21L, parent = 24L,
+    token = "SYMBOL_PACKAGE", terminal = TRUE, text = "methods",
+    file = "some/file.R", block = 1L, start_line = 1L, symbol_enum = 60L
+  )
+  expected <- tibble::tibble(
+    file = "some/file.R", block = 1L, start_line = 1L,
+    enumerated_code = list(c(60L)), block_size = 1L
+  )
+  expect_equal(
+    # drop the `enumerated_code` list-of-vectors because expect_equal can't
+    #   match these parts of tibbles easily
+    object = dplyr::select_if(
+      summarise_enumerated_blocks(input),
+      function(x) !is.list(x)
+    ),
+    expected = expected[, -4],
+    info = "block with a single code symbol"
+  )
+})
+
+###############################################################################

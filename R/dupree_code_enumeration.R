@@ -7,6 +7,10 @@
 
 ###############################################################################
 
+#' `.get_default_annotated_parsed_content`
+#'
+#' @noRd
+#'
 .get_default_annotated_parsed_content <- function() {
   i0 <- integer(0)
   c0 <- character(0)
@@ -31,6 +35,8 @@
 #' @importFrom   dplyr         mutate
 #' @include      dupree_data_validity.R
 #'
+#' @noRd
+#'
 annotate_parsed_content <- function(parsed_content, file, block, start_line) {
   stopifnot(.is_parsed_content(parsed_content))
 
@@ -50,6 +56,8 @@ annotate_parsed_content <- function(parsed_content, file, block, start_line) {
 #' @importFrom   dplyr         bind_rows
 #' @importFrom   purrr         keep   map2
 #' @include   dupree_data_validity.R
+#'
+#' @noRd
 #'
 get_localised_parsed_code_blocks <- function(source_exprs) {
   source_blocks <- purrr::keep(
@@ -72,7 +80,11 @@ get_localised_parsed_code_blocks <- function(source_exprs) {
   dplyr::bind_rows(parsed_content)
 }
 
+#' `remove_trivial_code_symbols`
+#'
 #' @importFrom   dplyr         filter
+#'
+#' @noRd
 #'
 remove_trivial_code_symbols <- function(df) {
   # TODO: check for presence of `token` column
@@ -91,7 +103,11 @@ remove_trivial_code_symbols <- function(df) {
     dplyr::filter_(~ !token %in% drop_tokens)
 }
 
+#' enumerate_code_symbols
+#'
 #' @importFrom   dplyr         mutate_
+#'
+#' @noRd
 #'
 enumerate_code_symbols <- function(df) {
   # TODO: check for `text` column
@@ -99,27 +115,42 @@ enumerate_code_symbols <- function(df) {
     dplyr::mutate_(symbol_enum = ~ as.integer(factor(text)))
 }
 
-#' @importFrom   dplyr         group_by_   summarise_
+#' summarise_enumerated_blocks
+#'
+#' @importFrom   dplyr         group_by_   summarise_   n
+#'
+#' @noRd
 #'
 summarise_enumerated_blocks <- function(df) {
   df %>%
-    dplyr::group_by_(~ file, ~ block, ~ start_line) %>%
+    dplyr::group_by_(~file, ~block, ~start_line) %>%
     dplyr::summarise_(
       enumerated_code = ~ list(c(symbol_enum)),
-      block_size = "n()"
+      block_size = ~ dplyr::n()
     )
 }
 
 ###############################################################################
 
+#' is_plain_r_file
+#'
 #' @importFrom   tools         file_ext
+#'
+#' @noRd
 #'
 is_plain_r_file <- function(file) {
   tools::file_ext(file) %in% c("r", "R")
 }
 
+#' get_source_expressions
+#'
+#' Depends on lintr (dev version of lintr if used with R-markdown files or
+#' empty R files).
+#'
 #' @importFrom   lintr         get_source_expressions
 #' @include      dupree_number_of_code_blocks.R
+#'
+#' @noRd
 #'
 get_source_expressions <- function(file) {
   num_blocks <- count_code_blocks(file)
@@ -133,8 +164,9 @@ get_source_expressions <- function(file) {
 
 #' import_parsed_code_blocks_from_one_file
 #'
-#' @noRd
 #' @importFrom   dplyr         filter_
+#'
+#' @noRd
 #'
 import_parsed_code_blocks_from_one_file <- function(file) {
   file %>%
@@ -143,8 +175,12 @@ import_parsed_code_blocks_from_one_file <- function(file) {
     dplyr::filter_(~ !token %in% "COMMENT")
 }
 
+#' import_parsed_code_blocks
+#'
 #' @importFrom   dplyr         bind_rows
 #' @importFrom   purrr         map
+#'
+#' @noRd
 #'
 import_parsed_code_blocks <- function(files) {
   files %>%
@@ -152,6 +188,10 @@ import_parsed_code_blocks <- function(files) {
     dplyr::bind_rows()
 }
 
+#' tokenize_code_blocks
+#'
+#' @noRd
+#'
 tokenize_code_blocks <- function(block_df) {
   block_df %>%
     remove_trivial_code_symbols() %>%
@@ -161,6 +201,8 @@ tokenize_code_blocks <- function(block_df) {
 
 ###############################################################################
 
+#' preprocess_code_blocks
+#'
 #' @param        files         A set of *.R or *.Rmd files over which dupree is
 #'   to perform duplicate-identification
 #' @param        min_block_size   An integer >= 1. How many non-trivial symbols
@@ -170,6 +212,8 @@ tokenize_code_blocks <- function(block_df) {
 #' @importFrom   dplyr         filter_
 #' @importFrom   methods       new
 #' @include      dupree_classes.R
+#'
+#' @noRd
 #'
 preprocess_code_blocks <- function(files, min_block_size = 20) {
   blocks <- files %>%
