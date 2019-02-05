@@ -68,6 +68,7 @@ test_that("EnumeratedCodeTable: find_best_match_for_single_block", {
 })
 
 test_that("EnumeratedCodeTable: find_best_matches", {
+  # - return at most 1 best-hit for each block
 
   empty_results <- tibble::tibble(
     file_a = character(0), file_b = character(0), block_a = integer(0),

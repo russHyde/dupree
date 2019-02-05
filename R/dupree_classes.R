@@ -205,7 +205,7 @@ find_indexes_of_best_matches <- function(enum_codes, method = "lcs", ...) {
     unique() %>%
     # order the code-block pairs by decreasing score
     dplyr::arrange_(
-      ~ dplyr::desc(score), ~ index_a, ~ index_b
+      ~dplyr::desc(score), ~index_a, ~index_b
     )
 
   scores

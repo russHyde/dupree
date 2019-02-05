@@ -76,13 +76,13 @@ test_that("Number of code blocks in imported files", {
   )
 
   # - Some non-R blocks
-  skip(
-    # All subsequent tests in this `test_that` block will not be ran
-    paste(
-      "`dupree` is not yet implemented for R-markdown files that contain",
-      "non-R code blocks"
-    )
-  )
+  # skip(
+  #  # All subsequent tests in this `test_that` block will not be ran
+  #  paste(
+  #    "`dupree` is not yet implemented for R-markdown files that contain",
+  #    "non-R code blocks"
+  #  )
+  # )
   non_r_rmd <- file.path("testdata", "non_r_blocks.Rmd")
   expect_true(
     nrow(import_parsed_code_blocks(non_r_rmd)) == 0,
