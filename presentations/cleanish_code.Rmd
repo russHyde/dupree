@@ -1,0 +1,88 @@
+---
+title: "Clean(ish) Code: `lintr` and `dupree`"
+subtitle: "Presented to EdinbR R-Users Group, 2019-07-17"
+author: "Russ Hyde, University of Glasgow"
+output:
+  ioslides_presentation:
+    df_print: paged
+---
+
+<!--
+  Styling to allow footnotes to appear on the same slide as their definition
+  - Borrowed from https://stackoverflow.com/questions/42690955
+-->
+
+<style>
+div.footnotes {
+  position: absolute;
+  bottom: 0;
+  margin-bottom: 10px;
+  width: 80%;
+  font-size: 0.6em;
+}
+</style>
+
+<script
+  src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"
+  ></script>
+<script>
+  $(document).ready(function() {
+    $('slide:not(.backdrop):not(.title-slide)').append('<div
+class=\"footnotes\">');
+
+    $('footnote').each(function(index) {
+      var text  = $(this).html();
+      var fnNum = (index+1).toString().sup();
+      $(this).html(text + fnNum);
+
+      var footnote   = fnNum + ': ' + $(this).attr('content') + '<br/>';
+      var oldContent =
+$(this).parents('slide').children('div.footnotes').html();
+      var newContent = oldContent + footnote;
+      $(this).parents('slide').children('div.footnotes').html(newContent);
+    });
+  });
+</script>
+
+<!-- Packages -->
+
+```{r, echo = FALSE}
+# suppressPackageStartupMessages({
+#   library(lintr)
+# })
+```
+
+<!-- Presentation code -->
+
+## Background and Links:
+
+### Today's packages
+
+- [https://github.com/russHyde/dupree](https://github.com/russHyde/dupree)
+- [https://github.com/jimhester/lintr](https://github.com/jimhester/lintr)
+
+### Me
+
+- [https://twitter.com/haematobot](https://twitter.com/haematobot)
+- [https://russ-hyde.rbind.io/](https://russ-hyde.rbind.io/)
+- [Paul O'Gorman Leukaemia Research Centre](
+    https://www.gla.ac.uk/connect/supportus/medicalfund/paulogormanleukaemiaresearchcentre/
+  )
+
+## Preamble
+
+```{r}
+# Dependencies:
+# - lintr, dplyr, purrr, tibble, magrittr, methods, stringdist
+if (!"dupree" %in% installed.packages()) {
+  require("devtools")
+  devtools::install_github(
+    repo = "russHyde/dupree", dependencies = FALSE
+  )
+}
+
+suppressPackageStartupMessages({
+  library(lintr)
+  library(dupree)
+})
+```
