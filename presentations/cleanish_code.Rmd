@@ -10,6 +10,9 @@ output:
 <!--
   Styling to allow footnotes to appear on the same slide as their definition
   - Borrowed from https://stackoverflow.com/questions/42690955
+  
+  To include a footnote use the syntax
+  Blah Blah Blah <footnote content="xyz"> Blah </footnote>
 -->
 
 <style>
@@ -22,13 +25,11 @@ div.footnotes {
 }
 </style>
 
-<script
-  src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"
-  ></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
 <script>
   $(document).ready(function() {
-    $('slide:not(.backdrop):not(.title-slide)').append('<div
-class=\"footnotes\">');
+    $('slide:not(.backdrop):not(.title-slide)').append('<div class=\"footnotes\">');
 
     $('footnote').each(function(index) {
       var text  = $(this).html();
@@ -36,8 +37,7 @@ class=\"footnotes\">');
       $(this).html(text + fnNum);
 
       var footnote   = fnNum + ': ' + $(this).attr('content') + '<br/>';
-      var oldContent =
-$(this).parents('slide').children('div.footnotes').html();
+      var oldContent = $(this).parents('slide').children('div.footnotes').html();
       var newContent = oldContent + footnote;
       $(this).parents('slide').children('div.footnotes').html(newContent);
     });
@@ -86,3 +86,56 @@ suppressPackageStartupMessages({
   library(dupree)
 })
 ```
+
+## Code Smells & Architectural Ideals
+
+_"The most common design problems result from code that_
+
+- _Is duplicated_
+
+- _Is unclear_
+
+- _Is complicated"_
+
+Quote: Kerievsky 'Refactoring to Patterns'
+
+See also
+Fowler 'Refactoring',
+Martin 'Clean Code'
+and Jenny Bryan's talk 'Code smells and feels'
+
+## Origins: Inconsistency & Duplication
+
+<!-- Homer clones? Dolly? -->
+
+```{r, echo = FALSE}
+url <- "https://static.fjcdn.com/large/pictures/9d/b7/9db733_1672275.gif"
+```
+
+![](`r url`){ width=80% }
+
+- Copy / Paste
+
+- Forgetting previous work
+
+- Rushing
+
+## `lintr`
+
+<!-- Mention goodpractice, cyclocomp, styler -->
+
+## Linting a script
+
+## Configuring `lintr`
+
+## Extending `lintr`
+
+## `dupree`
+
+## Duplication in a script
+
+## Duplication in a package
+
+## Speed
+
+## refactoRing
