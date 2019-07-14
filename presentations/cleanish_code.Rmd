@@ -10,7 +10,7 @@ output:
 <!--
   Styling to allow footnotes to appear on the same slide as their definition
   - Borrowed from https://stackoverflow.com/questions/42690955
-  
+
   To include a footnote use the syntax
   Blah Blah Blah <footnote content="xyz"> Blah </footnote>
 -->
@@ -47,9 +47,10 @@ div.footnotes {
 <!-- Packages -->
 
 ```{r, echo = FALSE}
-# suppressPackageStartupMessages({
-#   library(lintr)
-# })
+suppressPackageStartupMessages({
+  library(dplyr)
+  library(magrittr)
+})
 ```
 
 <!-- Presentation code -->
@@ -60,6 +61,7 @@ div.footnotes {
 
 - [https://github.com/russHyde/dupree](https://github.com/russHyde/dupree)
 - [https://github.com/jimhester/lintr](https://github.com/jimhester/lintr)
+- [`https://github.com/ropensci/git2r`](https://github.com/ropensci/git2r)
 
 ### Me
 
@@ -84,6 +86,7 @@ if (!"dupree" %in% installed.packages()) {
 suppressPackageStartupMessages({
   library(lintr)
   library(dupree)
+  library(git2r)
 })
 ```
 
@@ -104,9 +107,7 @@ Fowler 'Refactoring',
 Martin 'Clean Code'
 and Jenny Bryan's talk 'Code smells and feels'
 
-## Origins: Inconsistency & Duplication
-
-<!-- Homer clones? Dolly? -->
+## Types of duplication
 
 ```{r, echo = FALSE}
 url <- "https://static.fjcdn.com/large/pictures/9d/b7/9db733_1672275.gif"
@@ -114,11 +115,72 @@ url <- "https://static.fjcdn.com/large/pictures/9d/b7/9db733_1672275.gif"
 
 ![](`r url`){ width=80% }
 
-- Copy / Paste
+- Trivial stuff (`library(dplyr)`)
 
-- Forgetting previous work
+- Copy/paste-driven development (similar logic & code)
 
-- Rushing
+- Functional duplication (same logic, different code)
+
+- ? False duplication (different logic, similar code)
+
+## How to detect duplication?
+
+- Python
+    - `pylint` (looks for identical _lines_ between files)
+
+- Java / C++ / C# etc
+    - lots of choice (code structure / identity)
+
+- R: nothing for source code (AFAIK)
+
+    - String / Sequence similarity: `stringdist`
+    - Text analysis: `ropensci:textreuse`
+
+## `dupree`
+
+- [https://github.com/russHyde/dupree](https://github.com/russHyde/dupree)
+
+    - All input is welcome
+
+## Duplication in a script
+
+## Duplication in a package
+
+Downloaded the source code for `lintr` from github using
+[`ropensci/git2r`](https://github.com/ropensci/git2r).
+
+```{r}
+# temporary dir for storing `lintr`'s source code
+lintr_path <- file.path(tempdir(), "lintr")
+lintr_repo <- clone(
+  "https://github.com/jimhester/lintr",
+  lintr_path
+)
+```
+
+## Duplication in a package (cont)
+
+Ran dupree on `lintr`
+
+```{r}
+dups <- dupree::dupree_package(
+  package = lintr_path, min_block_size = 40
+)
+```
+
+```{r}
+plot(dups[["score"]], pch = 16)
+```
+
+## Duplication in a package (cont)
+
+```{r}
+dups %>%
+  dplyr::filter(score > 0.5 & file_a != file_b) %>%
+  head()
+```
+
+## Speed
 
 ## `lintr`
 
@@ -130,12 +192,5 @@ url <- "https://static.fjcdn.com/large/pictures/9d/b7/9db733_1672275.gif"
 
 ## Extending `lintr`
 
-## `dupree`
-
-## Duplication in a script
-
-## Duplication in a package
-
-## Speed
-
 ## refactoRing
+
