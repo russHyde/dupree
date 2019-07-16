@@ -50,6 +50,8 @@ div.footnotes {
 suppressPackageStartupMessages({
   library(dplyr)
   library(magrittr)
+  library(tidygraph)
+  library(ggraph)
 })
 ```
 
@@ -140,7 +142,12 @@ url <- "https://static.fjcdn.com/large/pictures/9d/b7/9db733_1672275.gif"
 
 - [https://github.com/russHyde/dupree](https://github.com/russHyde/dupree)
 
-    - All input is welcome
+- All community input is welcome
+
+- Most data input is welcome:
+    - sets of files (`dupree(files, min_block_size)`)
+    - a directory (`dupree_dir()`)
+    - or a package (`dupree_package()`)
 
 ## Duplication in a script
 
@@ -149,10 +156,10 @@ url <- "https://static.fjcdn.com/large/pictures/9d/b7/9db733_1672275.gif"
 Downloaded the source code for `lintr` from github using
 [`ropensci/git2r`](https://github.com/ropensci/git2r).
 
-```{r}
+```{r, message = FALSE, results="hide"}
 # temporary dir for storing `lintr`'s source code
 lintr_path <- file.path(tempdir(), "lintr")
-lintr_repo <- clone(
+lintr_repo <- git2r::clone(
   "https://github.com/jimhester/lintr",
   lintr_path
 )
@@ -164,23 +171,120 @@ Ran dupree on `lintr`
 
 ```{r}
 dups <- dupree::dupree_package(
-  package = lintr_path, min_block_size = 40
+  lintr_path, min_block_size = 40
 )
 ```
 
-```{r}
-plot(dups[["score"]], pch = 16)
+```{r, fig.height=3, echo = FALSE}
+ggplot2::qplot(
+  x = seq(nrow(dups)), y = dups[["score"]],
+  xlab = "Index",
+  ylab = "Similarity score:\nversus closest matching block")
 ```
 
-## Duplication in a package (cont)
+## Duplication in a package (cont) {.smaller}
 
 ```{r}
 dups %>%
   dplyr::filter(score > 0.5 & file_a != file_b) %>%
+  dplyr::mutate_at(c("file_a", "file_b"), basename) %>%
   head()
 ```
 
-## Speed
+[GOTO: `equals_na_lintr.R`](https://github.com/jimhester/lintr/blob/master/R/equals_na_lintr.R)
+
+## Visualisation of duplication results
+
+We make a tidygraph structure from the similarity scores
+
+```{r}
+dup_graph <- dups %>%
+  dplyr::filter(score > 0.5) %>%
+  dplyr::transmute(
+    from = paste(basename(file_a), line_a),
+    to = paste(basename(file_b), line_b),
+    type = "duplication",
+    score = score
+  ) %>%
+  tidygraph::as_tbl_graph() %>%
+  # distinguish the file each code block came from
+  mutate(filename = gsub("(.*) \\d+$", "\\1", name))
+```
+
+## graph
+
+```{r}
+dup_filtered <- filter(dups, score > 0.5)
+
+sequence_graph <- rbind(
+  transmute(dup_filtered, file = basename(file_a), line = line_a),
+  transmute(dup_filtered, file = basename(file_b), line = line_b)
+  ) %>%
+  unique() %>%
+  group_by(file) %>%
+  # dplyr::group_map requires dplyr >= 0.8
+  group_map(function(.x, .y) {
+    ordered <- arrange(.x, line)
+    tibble::tibble(
+      file = .y$file,
+      from = c("start", ordered$line),
+      to = c(ordered$line, "end")
+    ) %>%
+      transmute(
+        from = paste(file, from),
+        to = paste(file, to),
+        type = "sequence",
+        score = 0
+      )
+  }) %>%
+  bind_rows()
+```
+
+## graph
+
+```{r}
+seq_graph <- sequence_graph %>%
+  as_tbl_graph() %>%
+  mutate(
+    filename = gsub("(.*) \\d+$", "\\1", name),
+    y = as.integer(gsub("(.*) (\\d+)$", "\\2", name)),
+    x = as.integer(as.factor(filename))
+  )
+```
+
+```{r, echo = FALSE}
+bind_graphs(
+  seq_graph, dup_graph
+) %>%
+  ggraph(layout = "gem") +
+  geom_edge_link(
+    aes(colour = type, edge_width = score)
+  ) +
+  geom_node_point(
+    aes(colour = filename), size = 4, show.legend = FALSE
+  ) +
+  theme_graph()
+```
+
+## Visualisation of duplication results (cont)
+
+```{r}
+graph_image <- dup_graph %>%
+  ggraph(layout = "gem") +
+  geom_edge_link(
+    aes(colour = type, edge_width = score)
+  ) +
+  geom_node_point(
+    aes(colour = filename), size = 4, show.legend = FALSE
+  ) +
+  theme_graph()
+```
+
+## Visualisation of duplication results (cont)
+
+```{r}
+graph_image
+```
 
 ## `lintr`
 
