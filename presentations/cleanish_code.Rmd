@@ -1,5 +1,5 @@
 ---
-title: "Clean(ish) Code: `lintr` and `dupree`"
+title: "Clean(ish) Code: `dupree`"
 subtitle: "Presented to EdinbR R-Users Group, 2019-07-17"
 author: "Russ Hyde, University of Glasgow"
 output:
@@ -52,6 +52,7 @@ suppressPackageStartupMessages({
   library(magrittr)
   library(tidygraph)
   library(ggraph)
+  library(stringdist)
 })
 ```
 
@@ -137,6 +138,7 @@ url <- "https://static.fjcdn.com/large/pictures/9d/b7/9db733_1672275.gif"
 
     - String / Sequence similarity: `stringdist`
     - Text analysis: `ropensci:textreuse`
+    - (But tools like: `goodpractice`, `lintr`, `styler`, `cyclocomp`, `pkgnet`)
 
 ## `dupree`
 
@@ -145,11 +147,101 @@ url <- "https://static.fjcdn.com/large/pictures/9d/b7/9db733_1672275.gif"
 - All community input is welcome
 
 - Most data input is welcome:
-    - sets of files (`dupree(files, min_block_size)`)
+    - sets of files (`dupree()`)
     - a directory (`dupree_dir()`)
     - or a package (`dupree_package()`)
 
+## Mechanics
+
+Longest Common Substring
+```{r}
+# breakf-a---st
+# break-dance--
+stringdist::stringdist("breakfast", "breakdance", method = "lcs")
+```
+Code blocks
+
+-> Sentences of function / variable names
+
+-> "Sentences" of integers
+
+-> Compute similarity score based on longest-common-subsequence
+
+## Mechanics (cont.)
+
+Use `seq_sim` to compute LCS-based distance between vectors of integers
+
+```{r}
+to_ints <- function(word){
+  as.integer(factor(strsplit(word, "")[[1]], levels = letters))
+}
+
+to_ints("breakfast")
+```
+
+```{r}
+stringdist::seq_sim(
+  list(to_ints("breakfast")), list(to_ints("breakdance")), method = "lcs"
+) # 1 - |LCS| / (|seq1| + |seq2|)
+```
+
 ## Duplication in a script
+
+```{r}
+# min_block_size: used to prevent dupree analysing really small code blocks
+dupree("duplication_heavy.R", min_block_size = 3) %>%
+  dplyr::select(-file_a, -file_b)
+```
+
+## Duplication in a script (cont.) {.smaller}
+
+```{r, code = readLines("duplication_heavy.R"), eval = FALSE}
+```
+
+<!--
+## Duplication in a script {.smaller}
+
+```{r, echo = FALSE}
+temp_lear <- tempfile(fileext = ".R")
+```
+
+```{r, echo = FALSE}
+lear <- "
+# temp file
+
+lear1 <- function() {
+  print(paste('there', 'was', 'an', 'old', 'man' 'of', 'Cashmere'))
+  print(paste('whose', 'movements', 'were', 'scroobious', 'and', 'queer'))
+  print(paste('being', 'slender', 'and', 'tall', 'he', 'looked', 'over', 'a', 'wall')),
+  print(paste('and', 'perceived', 'two', 'fat', 'ducks', 'of', 'Cashmere'
+  ))
+}
+
+lear2 <- function(){
+  paste(
+    'there', 'was', 'an', 'old', 'man' 'of', 'black', 'heath',
+    'whose', 'head', 'was', 'adorned', 'with', 'a', 'wreath',
+    'of', 'lobsters', 'and', 'spice', 'pickled', 'onions', 'and' 'mice',
+    'that', 'uncommon', 'old', 'man', 'of', 'black', 'heath'
+  )
+}
+
+citation('Lear: Complete Nonsense')
+"
+
+cat(lear, file = temp_lear)
+```
+
+```{r, code = readLines(temp_lear), eval = FALSE}
+```
+
+## Duplication in a script (cont.)
+
+```{r}
+dupree(file = temp_lear, min_block_size = 3)
+```
+
+-->
 
 ## Duplication in a package
 
@@ -186,7 +278,7 @@ ggplot2::qplot(
 
 ```{r}
 dups %>%
-  dplyr::filter(score > 0.5 & file_a != file_b) %>%
+  dplyr::filter(score > 0.4 & file_a != file_b) %>%
   dplyr::mutate_at(c("file_a", "file_b"), basename) %>%
   head()
 ```
@@ -199,8 +291,10 @@ We make a tidygraph structure from the similarity scores
 
 ```{r}
 dup_graph <- dups %>%
-  dplyr::filter(score > 0.5) %>%
+  # keep code-block pairs with moderate similarity:
+  dplyr::filter(score > 0.4) %>%
   dplyr::transmute(
+    # indicate code-blocks by filename and start-line
     from = paste(basename(file_a), line_a),
     to = paste(basename(file_b), line_b),
     type = "duplication",
@@ -211,10 +305,12 @@ dup_graph <- dups %>%
   mutate(filename = gsub("(.*) \\d+$", "\\1", name))
 ```
 
+<!--
+
 ## graph
 
 ```{r}
-dup_filtered <- filter(dups, score > 0.5)
+dup_filtered <- filter(dups, score > 0.4)
 
 sequence_graph <- rbind(
   transmute(dup_filtered, file = basename(file_a), line = line_a),
@@ -266,6 +362,8 @@ bind_graphs(
   theme_graph()
 ```
 
+-->
+
 ## Visualisation of duplication results (cont)
 
 ```{r}
@@ -286,15 +384,41 @@ graph_image <- dup_graph %>%
 graph_image
 ```
 
-## `lintr`
+## Visualisation of duplication results (cont)
 
-<!-- Mention goodpractice, cyclocomp, styler -->
+```{r}
+graph_image +
+  geom_node_text(aes(label = name), repel = TRUE)
+```
 
-## Linting a script
+## What was `lintr` by the way?
 
-## Configuring `lintr`
+- style / syntax checker for _R_
 
-## Extending `lintr`
+- configurable
+
+- can be ran
+
+    - in Rstudio / vim / atom etc
+
+    - or on Travis
+
+- (and dupree uses lintr's file parsers)
 
 ## refactoRing
 
+- Improving the structure of code (without modifying its function)
+
+- The rule of 3
+
+- Examples
+
+    - Figures: Global theming / %+%
+
+    - Statements: Replace with function call
+
+    - Common functions: Move to a package
+
+    - RMarkdown: Configurable reports / child-stubs
+
+# Thanks
