@@ -151,39 +151,6 @@ url <- "https://static.fjcdn.com/large/pictures/9d/b7/9db733_1672275.gif"
     - a directory (`dupree_dir()`)
     - or a package (`dupree_package()`)
 
-## Mechanics
-
-Longest Common Substring
-```{r}
-# breakf-a---st
-# break-dance--
-stringdist::stringdist("breakfast", "breakdance", method = "lcs")
-```
-Code blocks
-
--> Sentences of function / variable names
-
--> "Sentences" of integers
-
--> Compute similarity score based on longest-common-subsequence
-
-## Mechanics (cont.)
-
-Use `seq_sim` to compute LCS-based distance between vectors of integers
-
-```{r}
-to_ints <- function(word){
-  as.integer(factor(strsplit(word, "")[[1]], levels = letters))
-}
-
-to_ints("breakfast")
-```
-
-```{r}
-stringdist::seq_sim(
-  list(to_ints("breakfast")), list(to_ints("breakdance")), method = "lcs"
-) # 1 - |LCS| / (|seq1| + |seq2|)
-```
 
 ## Duplication in a script
 
@@ -242,6 +209,40 @@ dupree(file = temp_lear, min_block_size = 3)
 ```
 
 -->
+
+## Mechanics
+
+Longest Common Substring
+```{r}
+# breakf-a---st
+# break-dance--
+stringdist::stringdist("breakfast", "breakdance", method = "lcs")
+```
+Code blocks
+
+-> Sentences of function / variable names
+
+-> "Sentences" of integers
+
+-> Compute similarity score based on longest-common-subsequence
+
+## Mechanics (cont.)
+
+Use `seq_sim` to compute LCS-based distance between vectors of integers
+
+```{r}
+to_ints <- function(word){
+  as.integer(factor(strsplit(word, "")[[1]], levels = letters))
+}
+
+to_ints("breakfast")
+```
+
+```{r}
+stringdist::seq_sim(
+  list(to_ints("breakfast")), list(to_ints("breakdance")), method = "lcs"
+) # 1 - |LCS| / (|seq1| + |seq2|)
+```
 
 ## Duplication in a package
 
