@@ -133,6 +133,19 @@ methods::setMethod(
   )
 }
 
+#' One against one search
+#'
+#' @noRd
+#'
+.one_against_one <- function(subject_index, target_index, enum_codes, sim_func) {
+  score <- sim_func(enum_codes[subject_index], enum_codes[target_index])
+  list(
+    index_a = subject_index,
+    index_b = target_index,
+    score = score
+  )
+}
+
 #' All against all search
 #'
 #' @param        enum_codes    List of vectors of integers. Each `int` is an
@@ -161,15 +174,22 @@ find_indexes_of_best_matches <- function(enum_codes, method = "lcs", ...) {
   sim_func <- function(x, y) {
     stringdist::seq_sim(x, y, method = method, ...)
   }
-
-  scores <- purrr::map_df(
-    seq_along(enum_codes),
-    .one_against_all,
+  combs <- combn(seq_along(enum_codes), 2)
+  scores <- purrr::map2_dfr(
+    combs[1, ],
+    combs[2, ],
+    .one_against_one,
     enum_codes,
     sim_func
   )
 
-  scores %>%
+  a_scores <- scores %>% dplyr::group_by(index_a) %>% 
+    filter(score == max(score))
+  b_scores <- scores %>% dplyr::group_by(index_b) %>% 
+    filter(score == max(score))
+
+  dplyr::bind_rows(a_scores, b_scores) %>% 
+    dplyr::distinct(index_a, index_b, .keep_all = TRUE) %>%
     dplyr::arrange_(
       ~ dplyr::desc(score), ~index_a, ~index_b
     )
