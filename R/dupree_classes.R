@@ -36,6 +36,12 @@ methods::setValidity("EnumeratedCodeTable", .is_enumerated_code_table)
 
 #' Initialise an `EnumeratedCodeTable`
 #'
+#' An `EnumeratedCodeTable` contains a `blocks` table. Each row of this table
+#' contains details for a block of R code: the filename, block-id and startline
+#' of the block, and a tokenized version of the code within that block.
+#'
+#' Once initialised, the blocks table is ordered by filename and then block-id.
+#'
 #' @importFrom   methods       callNextMethod   setMethod   validObject
 #' @importFrom   tibble        tibble
 #'
@@ -56,6 +62,9 @@ methods::setMethod(
 
     if (is.null(blocks)) {
       .Object@blocks <- default_code_table
+    } else {
+      # we ensure that the code blocks are ordered by file and then block
+      .Object@blocks <- dplyr::arrange_(blocks, ~file, ~block)
     }
 
     methods::validObject(.Object)
@@ -86,6 +95,13 @@ methods::setGeneric("find_best_matches", function(x, ...) {
 })
 
 #' `find_best_matches` between code blocks in an `EnumeratedCodeTable`
+#'
+#' The code blocks are assumed to be ordered within the
+#' `EnumeratedCodeTable`, as such when two code blocks are
+#' mutually-best-matches, the results returned by this function only contains
+#' a single row for those two code blocks; when this happens we guarantee that
+#' `file_a` <= `file_b` and `block_a` <= `block_b`
+#'
 #' @noRd
 #'
 methods::setMethod(
@@ -143,7 +159,7 @@ methods::setMethod(
 #' @param        ...           Further parameters for passing to
 #'   `stringdist::seq_sim`.
 #'
-#' @importFrom   dplyr         arrange_   desc
+#' @importFrom   dplyr         arrange_   desc   mutate_   select_
 #' @importFrom   purrr         map_df
 #' @importFrom   stringdist    seq_sim
 #' @importFrom   tibble        tibble
@@ -162,17 +178,37 @@ find_indexes_of_best_matches <- function(enum_codes, method = "lcs", ...) {
     stringdist::seq_sim(x, y, method = method, ...)
   }
 
+  # .one_against_all returns df: (index_a, index_b, score)
+
+  # For each code-block we want to identify it's closest matching code-block
+  #
+  # We only return a code-block pair once (ie, if A-B is a pair and B-A is a
+  # pair, then we return A-B, but not B-A)
+  #
+  # When C-A is a pair but the index of C is greater than that of A, we return
+  # the pair A-C
+
   scores <- purrr::map_df(
     seq_along(enum_codes),
     .one_against_all,
     enum_codes,
     sim_func
-  )
-
-  scores %>%
+  ) %>%
+    # ensure the index of A is less than the index of B
+    dplyr::mutate_(
+      temp = ~ pmax(index_a, index_b),
+      index_a = ~ pmin(index_a, index_b),
+      index_b = ~ temp
+    ) %>%
+    dplyr::select_(~ -temp) %>%
+    # only return each code-block pair once
+    unique() %>%
+    # order the code-block pairs by decreasing score
     dplyr::arrange_(
-      ~ dplyr::desc(score), ~index_a, ~index_b
+      ~ dplyr::desc(score), ~ index_a, ~ index_b
     )
+
+  scores
 }
 
 ###############################################################################
