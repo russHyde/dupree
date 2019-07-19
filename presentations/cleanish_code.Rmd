@@ -1,5 +1,5 @@
 ---
-title: "Clean(ish) Code: `lintr` and `dupree`"
+title: "Clean(ish) Code: `dupree`"
 subtitle: "Presented to EdinbR R-Users Group, 2019-07-17"
 author: "Russ Hyde, University of Glasgow"
 output:
@@ -10,6 +10,9 @@ output:
 <!--
   Styling to allow footnotes to appear on the same slide as their definition
   - Borrowed from https://stackoverflow.com/questions/42690955
+
+  To include a footnote use the syntax
+  Blah Blah Blah <footnote content="xyz"> Blah </footnote>
 -->
 
 <style>
@@ -22,13 +25,11 @@ div.footnotes {
 }
 </style>
 
-<script
-  src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"
-  ></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
 <script>
   $(document).ready(function() {
-    $('slide:not(.backdrop):not(.title-slide)').append('<div
-class=\"footnotes\">');
+    $('slide:not(.backdrop):not(.title-slide)').append('<div class=\"footnotes\">');
 
     $('footnote').each(function(index) {
       var text  = $(this).html();
@@ -36,8 +37,7 @@ class=\"footnotes\">');
       $(this).html(text + fnNum);
 
       var footnote   = fnNum + ': ' + $(this).attr('content') + '<br/>';
-      var oldContent =
-$(this).parents('slide').children('div.footnotes').html();
+      var oldContent = $(this).parents('slide').children('div.footnotes').html();
       var newContent = oldContent + footnote;
       $(this).parents('slide').children('div.footnotes').html(newContent);
     });
@@ -47,9 +47,13 @@ $(this).parents('slide').children('div.footnotes').html();
 <!-- Packages -->
 
 ```{r, echo = FALSE}
-# suppressPackageStartupMessages({
-#   library(lintr)
-# })
+suppressPackageStartupMessages({
+  library(dplyr)
+  library(magrittr)
+  library(tidygraph)
+  library(ggraph)
+  library(stringdist)
+})
 ```
 
 <!-- Presentation code -->
@@ -60,6 +64,7 @@ $(this).parents('slide').children('div.footnotes').html();
 
 - [https://github.com/russHyde/dupree](https://github.com/russHyde/dupree)
 - [https://github.com/jimhester/lintr](https://github.com/jimhester/lintr)
+- [`https://github.com/ropensci/git2r`](https://github.com/ropensci/git2r)
 
 ### Me
 
@@ -84,5 +89,337 @@ if (!"dupree" %in% installed.packages()) {
 suppressPackageStartupMessages({
   library(lintr)
   library(dupree)
+  library(git2r)
 })
 ```
+
+## Code Smells & Architectural Ideals
+
+_"The most common design problems result from code that_
+
+- _Is duplicated_
+
+- _Is unclear_
+
+- _Is complicated"_
+
+Quote: Kerievsky 'Refactoring to Patterns'
+
+See also
+Fowler 'Refactoring',
+Martin 'Clean Code'
+and Jenny Bryan's talk 'Code smells and feels'
+
+## Types of duplication
+
+```{r, echo = FALSE}
+url <- "https://static.fjcdn.com/large/pictures/9d/b7/9db733_1672275.gif"
+```
+
+![](`r url`){ width=80% }
+
+- Trivial stuff (`library(dplyr)`)
+
+- Copy/paste-driven development (similar logic & code)
+
+- Functional duplication (same logic, different code)
+
+- ? False duplication (different logic, similar code)
+
+## How to detect duplication?
+
+- Python
+    - `pylint` (looks for identical _lines_ between files)
+
+- Java / C++ / C# etc
+    - lots of choice (code structure / identity)
+
+- R: nothing for source code (AFAIK)
+
+    - String / Sequence similarity: `stringdist`
+    - Text analysis: `ropensci:textreuse`
+    - (But tools like: `goodpractice`, `lintr`, `styler`, `cyclocomp`, `pkgnet`)
+
+## `dupree`
+
+- [https://github.com/russHyde/dupree](https://github.com/russHyde/dupree)
+
+- All community input is welcome
+
+- Most data input is welcome:
+    - sets of files (`dupree()`)
+    - a directory (`dupree_dir()`)
+    - or a package (`dupree_package()`)
+
+
+## Duplication in a script
+
+```{r}
+# min_block_size: used to prevent dupree analysing really small code blocks
+dupree("duplication_heavy.R", min_block_size = 3) %>%
+  dplyr::select(-file_a, -file_b)
+```
+
+## Duplication in a script (cont.) {.smaller}
+
+```{r, code = readLines("duplication_heavy.R"), eval = FALSE}
+```
+
+<!--
+## Duplication in a script {.smaller}
+
+```{r, echo = FALSE}
+temp_lear <- tempfile(fileext = ".R")
+```
+
+```{r, echo = FALSE}
+lear <- "
+# temp file
+
+lear1 <- function() {
+  print(paste('there', 'was', 'an', 'old', 'man' 'of', 'Cashmere'))
+  print(paste('whose', 'movements', 'were', 'scroobious', 'and', 'queer'))
+  print(paste('being', 'slender', 'and', 'tall', 'he', 'looked', 'over', 'a', 'wall')),
+  print(paste('and', 'perceived', 'two', 'fat', 'ducks', 'of', 'Cashmere'
+  ))
+}
+
+lear2 <- function(){
+  paste(
+    'there', 'was', 'an', 'old', 'man' 'of', 'black', 'heath',
+    'whose', 'head', 'was', 'adorned', 'with', 'a', 'wreath',
+    'of', 'lobsters', 'and', 'spice', 'pickled', 'onions', 'and' 'mice',
+    'that', 'uncommon', 'old', 'man', 'of', 'black', 'heath'
+  )
+}
+
+citation('Lear: Complete Nonsense')
+"
+
+cat(lear, file = temp_lear)
+```
+
+```{r, code = readLines(temp_lear), eval = FALSE}
+```
+
+## Duplication in a script (cont.)
+
+```{r}
+dupree(file = temp_lear, min_block_size = 3)
+```
+
+-->
+
+## Mechanics
+
+Longest Common Substring
+```{r}
+# breakf-a---st
+# break-dance--
+stringdist::stringdist("breakfast", "breakdance", method = "lcs")
+```
+Code blocks
+
+-> Sentences of function / variable names
+
+-> "Sentences" of integers
+
+-> Compute similarity score based on longest-common-subsequence
+
+## Mechanics (cont.)
+
+Use `seq_sim` to compute LCS-based distance between vectors of integers
+
+```{r}
+to_ints <- function(word){
+  as.integer(factor(strsplit(word, "")[[1]], levels = letters))
+}
+
+to_ints("breakfast")
+```
+
+```{r}
+stringdist::seq_sim(
+  list(to_ints("breakfast")), list(to_ints("breakdance")), method = "lcs"
+) # 1 - |LCS| / (|seq1| + |seq2|)
+```
+
+## Duplication in a package
+
+Downloaded the source code for `lintr` from github using
+[`ropensci/git2r`](https://github.com/ropensci/git2r).
+
+```{r, message = FALSE, results="hide"}
+# temporary dir for storing `lintr`'s source code
+lintr_path <- file.path(tempdir(), "lintr")
+lintr_repo <- git2r::clone(
+  "https://github.com/jimhester/lintr",
+  lintr_path
+)
+```
+
+## Duplication in a package (cont)
+
+Ran dupree on `lintr`
+
+```{r}
+dups <- dupree::dupree_package(
+  lintr_path, min_block_size = 40
+)
+```
+
+```{r, fig.height=3, echo = FALSE}
+ggplot2::qplot(
+  x = seq(nrow(dups)), y = dups[["score"]],
+  xlab = "Index",
+  ylab = "Similarity score:\nversus closest matching block")
+```
+
+## Duplication in a package (cont) {.smaller}
+
+```{r}
+dups %>%
+  dplyr::filter(score > 0.4 & file_a != file_b) %>%
+  dplyr::mutate_at(c("file_a", "file_b"), basename) %>%
+  head()
+```
+
+[GOTO: `equals_na_lintr.R`](https://github.com/jimhester/lintr/blob/master/R/equals_na_lintr.R)
+
+## Visualisation of duplication results
+
+We make a tidygraph structure from the similarity scores
+
+```{r}
+dup_graph <- dups %>%
+  # keep code-block pairs with moderate similarity:
+  dplyr::filter(score > 0.4) %>%
+  dplyr::transmute(
+    # indicate code-blocks by filename and start-line
+    from = paste(basename(file_a), line_a),
+    to = paste(basename(file_b), line_b),
+    type = "duplication",
+    score = score
+  ) %>%
+  tidygraph::as_tbl_graph() %>%
+  # distinguish the file each code block came from
+  mutate(filename = gsub("(.*) \\d+$", "\\1", name))
+```
+
+<!--
+
+## graph
+
+```{r}
+dup_filtered <- filter(dups, score > 0.4)
+
+sequence_graph <- rbind(
+  transmute(dup_filtered, file = basename(file_a), line = line_a),
+  transmute(dup_filtered, file = basename(file_b), line = line_b)
+  ) %>%
+  unique() %>%
+  group_by(file) %>%
+  # dplyr::group_map requires dplyr >= 0.8
+  group_map(function(.x, .y) {
+    ordered <- arrange(.x, line)
+    tibble::tibble(
+      file = .y$file,
+      from = c("start", ordered$line),
+      to = c(ordered$line, "end")
+    ) %>%
+      transmute(
+        from = paste(file, from),
+        to = paste(file, to),
+        type = "sequence",
+        score = 0
+      )
+  }) %>%
+  bind_rows()
+```
+
+## graph
+
+```{r}
+seq_graph <- sequence_graph %>%
+  as_tbl_graph() %>%
+  mutate(
+    filename = gsub("(.*) \\d+$", "\\1", name),
+    y = as.integer(gsub("(.*) (\\d+)$", "\\2", name)),
+    x = as.integer(as.factor(filename))
+  )
+```
+
+```{r, echo = FALSE}
+bind_graphs(
+  seq_graph, dup_graph
+) %>%
+  ggraph(layout = "gem") +
+  geom_edge_link(
+    aes(colour = type, edge_width = score)
+  ) +
+  geom_node_point(
+    aes(colour = filename), size = 4, show.legend = FALSE
+  ) +
+  theme_graph()
+```
+
+-->
+
+## Visualisation of duplication results (cont)
+
+```{r}
+graph_image <- dup_graph %>%
+  ggraph(layout = "gem") +
+  geom_edge_link(
+    aes(colour = type, edge_width = score)
+  ) +
+  geom_node_point(
+    aes(colour = filename), size = 4, show.legend = FALSE
+  ) +
+  theme_graph()
+```
+
+## Visualisation of duplication results (cont)
+
+```{r}
+graph_image
+```
+
+## Visualisation of duplication results (cont)
+
+```{r}
+graph_image +
+  geom_node_text(aes(label = name), repel = TRUE)
+```
+
+## What was `lintr` by the way?
+
+- style / syntax checker for _R_
+
+- configurable
+
+- can be ran
+
+    - in Rstudio / vim / atom etc
+
+    - or on Travis
+
+- (and dupree uses lintr's file parsers)
+
+## refactoRing
+
+- Improving the structure of code (without modifying its function)
+
+- The rule of 3
+
+- Examples
+
+    - Figures: Global theming / %+%
+
+    - Statements: Replace with function call
+
+    - Common functions: Move to a package
+
+    - RMarkdown: Configurable reports / child-stubs
+
+# Thanks
