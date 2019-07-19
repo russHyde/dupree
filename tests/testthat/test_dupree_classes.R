@@ -133,7 +133,6 @@ test_that("EnumeratedCodeTable: find_best_matches", {
     enumerated_code = list(1:4, 3:6)
     # seq_dist_LCS = 4; length_sum = 8; seq_sim = 1 - dist/len_sum = 0.5
   )
-  nonequal_code_table <- new("EnumeratedCodeTable", nonequal_blocks)
   expect_equal(
     find_best_matches(new("EnumeratedCodeTable", nonequal_blocks)),
     tibble::tibble(
@@ -163,5 +162,23 @@ test_that("EnumeratedCodeTable: find_best_matches", {
       "A single code-block can't be compared to anything: results should be",
       "empty"
     )
+  )
+
+  # - If A-B, B-A and C-A are optimal then B-C shouldn't be in the results
+  three_blocks <- tibble::tibble(
+    file = "a", block = 1:3, start_line = 1:3,
+    # A) 1-2-3-4-5
+    # B) 1-2-3-6-5 (A-B: 2)
+    # C) 7-2-3-4-8 (A-C: 4; B-C: 6)
+    enumerated_code = list(1:5, c(1:3, 6, 5), c(7, 2:4, 8))
+  )
+  triple_code_table <- new("EnumeratedCodeTable", three_blocks)
+  expect_equal(
+    find_best_matches(triple_code_table),
+    tibble::tibble(
+      file_a = "a", file_b = "a", block_a = rep(1L, 2), block_b = 2:3,
+      line_a = 1L, line_b = 2:3, score = c(1 - 2 / 10, 1 - 4 / 10)
+    ),
+    info = "no cycles should be present in the results (by default)"
   )
 })
