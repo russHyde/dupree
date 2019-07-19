@@ -1,7 +1,7 @@
 Package: dupree
 Type: Package
 Title: Identify duplicated R code in a project
-Version: 0.1.0
+Version: 0.1.0.9000
 Author: Russ Hyde, University of Glasgow
 Maintainer: Russ Hyde <yourself@somewhere.net>
 Description: `dupree` helps identify code blocks that have a high level
