@@ -56,6 +56,9 @@ methods::setMethod(
 
     if (is.null(blocks)) {
       .Object@blocks <- default_code_table
+    } else {
+      # we ensure that the code blocks are ordered by file and then block
+      .Object@blocks <- dplyr::arrange_(blocks, ~file, ~block)
     }
 
     methods::validObject(.Object)
@@ -86,6 +89,13 @@ methods::setGeneric("find_best_matches", function(x, ...) {
 })
 
 #' `find_best_matches` between code blocks in an `EnumeratedCodeTable`
+#'
+#' The code blocks are assumed to be ordered within the
+#' `EnumeratedCodeTable`, as such when two code blocks are
+#' mutually-best-matches, the results returned by this function only contains
+#' a single row for those two code blocks; when this happens we guarantee that
+#' `file_a` <= `file_b` and `block_a` <= `block_b`
+#'
 #' @noRd
 #'
 methods::setMethod(
@@ -137,7 +147,9 @@ methods::setMethod(
 #'
 #' @noRd
 #'
-.one_against_one <- function(subject_index, target_index, enum_codes, sim_func) {
+.one_against_one <- function(
+    subject_index, target_index, enum_codes, sim_func
+  ) {
   score <- sim_func(enum_codes[subject_index], enum_codes[target_index])
   list(
     index_a = subject_index,
@@ -156,10 +168,12 @@ methods::setMethod(
 #' @param        ...           Further parameters for passing to
 #'   `stringdist::seq_sim`.
 #'
-#' @importFrom   dplyr         arrange_   desc
-#' @importFrom   purrr         map_df
+#' @importFrom   dplyr         arrange_   bind_rows   desc   distinct_
+#' @importFrom   dplyr         filter_   group_by_
+#' @importFrom   purrr         map2_dfr
 #' @importFrom   stringdist    seq_sim
 #' @importFrom   tibble        tibble
+#' @importFrom   utils         combn
 #'
 #' @noRd
 #'
@@ -174,7 +188,7 @@ find_indexes_of_best_matches <- function(enum_codes, method = "lcs", ...) {
   sim_func <- function(x, y) {
     stringdist::seq_sim(x, y, method = method, ...)
   }
-  combs <- combn(seq_along(enum_codes), 2)
+  combs <- utils::combn(seq_along(enum_codes), 2)
   scores <- purrr::map2_dfr(
     combs[1, ],
     combs[2, ],
@@ -183,15 +197,18 @@ find_indexes_of_best_matches <- function(enum_codes, method = "lcs", ...) {
     sim_func
   )
 
-  a_scores <- scores %>% dplyr::group_by(index_a) %>% 
-    filter(score == max(score))
-  b_scores <- scores %>% dplyr::group_by(index_b) %>% 
-    filter(score == max(score))
+  a_scores <- scores %>%
+    dplyr::group_by_(~ index_a) %>%
+    dplyr::filter_(~ score == max(score))
 
-  dplyr::bind_rows(a_scores, b_scores) %>% 
-    dplyr::distinct(index_a, index_b, .keep_all = TRUE) %>%
+  b_scores <- scores %>%
+    dplyr::group_by_(~ index_b) %>%
+    dplyr::filter_(~ score == max(score))
+
+  dplyr::bind_rows(a_scores, b_scores) %>%
+    dplyr::distinct_(~ index_a, ~ index_b, .keep_all = TRUE) %>%
     dplyr::arrange_(
-      ~ dplyr::desc(score), ~index_a, ~index_b
+      ~ dplyr::desc(score), ~ index_a, ~ index_b
     )
 }
 

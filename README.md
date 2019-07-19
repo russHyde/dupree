@@ -56,29 +56,20 @@ This is a basic example which shows you how to solve a common problem:
 library(dupree)
 files <- dir(pattern = "*.R(md)*$", recursive = TRUE)
 dupree(files, min_block_size = 20)
-#> # A tibble: 20 x 7
-#>    file_a            file_b            block_a block_b line_a line_b score
-#>    <chr>             <chr>               <int>   <int>  <int>  <int> <dbl>
-#>  1 tests/testthat/t… tests/testthat/t…       4       8      7     95 0.36 
-#>  2 tests/testthat/t… tests/testthat/t…       8       4     95      7 0.36 
-#>  3 R/dupree_classes… tests/testthat/t…      13      11     35     22 0.34 
-#>  4 tests/testthat/t… R/dupree_classes…      11      13     22     35 0.34 
-#>  5 R/dupree_number_… R/dupree_number_…      16      17     24     42 0.265
-#>  6 R/dupree_number_… R/dupree_number_…      17      16     42     24 0.265
-#>  7 tests/testthat/t… tests/testthat/t…      14      11     70     22 0.246
-#>  8 R/dupree_classes… R/dupree_classes…      25      13     75     35 0.242
-#>  9 R/dupree_code_en… R/dupree_code_en…      41      72    104    174 0.222
-#> 10 R/dupree_code_en… R/dupree_code_en…      72      41    174    104 0.222
-#> 11 R/dupree_classes… R/dupree_code_en…      38      32    124     54 0.215
-#> 12 R/dupree_code_en… R/dupree_classes…      32      38     54    124 0.215
-#> 13 tests/testthat/t… tests/testthat/t…       6       8     25     95 0.212
-#> 14 R/dupree.R        R/dupree_code_en…      57      72     69    174 0.200
-#> 15 R/dupree_classes… R/dupree_classes…      30      38    106    124 0.198
-#> 16 R/dupree_code_en… R/dupree_code_en…      35      41     77    104 0.179
-#> 17 R/dupree_classes… R/dupree_data_va…       8      22     15     41 0.163
-#> 18 R/dupree_data_va… R/dupree_classes…      22       8     41     15 0.163
-#> 19 R/dupree_code_en… tests/testthat/t…       7      11     10     22 0.162
-#> 20 tests/testthat/t… R/dupree_classes…       4      13      7     35 0.127
+#> # A tibble: 32 x 7
+#>    file_a             file_b            block_a block_b line_a line_b score
+#>    <chr>              <chr>               <int>   <int>  <int>  <int> <dbl>
+#>  1 tests/testthat/te… tests/testthat/t…       2       4      7     95 0.36 
+#>  2 R/dupree_classes.R tests/testthat/t…       4       3     44     22 0.327
+#>  3 R/dupree_code_enu… tests/testthat/t…       1       5     14    119 0.283
+#>  4 R/dupree_number_o… R/dupree_number_…       2       3     24     42 0.265
+#>  5 tests/testthat/te… tests/testthat/t…       3       5     22     70 0.239
+#>  6 R/dupree_classes.R R/dupree_classes…       4       6     44    101 0.218
+#>  7 R/dupree_code_enu… R/dupree_code_en…       6      12    124    218 0.213
+#>  8 tests/testthat/te… tests/testthat/t…       3       4     25     95 0.212
+#>  9 R/dupree_code_enu… R/dupree.R             12       2    218     69 0.200
+#> 10 R/dupree_classes.R R/dupree_code_en…       4       6     44    124 0.192
+#> # … with 22 more rows
 ```
 
 Note that you can do something similar using the functions `dupree_dir`
@@ -87,43 +78,55 @@ and (if you are analysing a package) `dupree_package`.
 ``` r
 # Analyse all R files except those in the tests directory:
 dupree_dir(".", min_block_size = 20, filter = "tests", invert = TRUE)
-#> # A tibble: 14 x 7
-#>    file_a            file_b            block_a block_b line_a line_b score
-#>    <chr>             <chr>               <int>   <int>  <int>  <int> <dbl>
-#>  1 ./R/dupree_numbe… ./R/dupree_numbe…      16      17     24     42 0.265
-#>  2 ./R/dupree_numbe… ./R/dupree_numbe…      17      16     42     24 0.265
-#>  3 ./R/dupree_class… ./R/dupree_class…      13      25     35     75 0.242
-#>  4 ./R/dupree_class… ./R/dupree_class…      25      13     75     35 0.242
-#>  5 ./R/dupree_code_… ./R/dupree_code_…      41      72    104    174 0.222
-#>  6 ./R/dupree_code_… ./R/dupree_code_…      72      41    174    104 0.222
-#>  7 ./R/dupree_class… ./R/dupree_code_…      38      32    124     54 0.215
-#>  8 ./R/dupree_code_… ./R/dupree_class…      32      38     54    124 0.215
-#>  9 ./R/dupree.R      ./R/dupree_code_…      57      72     69    174 0.200
-#> 10 ./R/dupree_class… ./R/dupree_class…      30      38    106    124 0.198
-#> 11 ./R/dupree_code_… ./R/dupree_code_…      35      41     77    104 0.179
-#> 12 ./R/dupree_class… ./R/dupree_data_…       8      22     15     41 0.163
-#> 13 ./R/dupree_data_… ./R/dupree_class…      22       8     41     15 0.163
-#> 14 ./R/dupree_code_… ./R/dupree_class…       7      13     10     35 0.16
+#> # A tibble: 20 x 7
+#>    file_a            file_b            block_a block_b line_a line_b  score
+#>    <chr>             <chr>               <int>   <int>  <int>  <int>  <dbl>
+#>  1 ./R/dupree_numbe… ./R/dupree_numbe…       2       3     24     42 0.265 
+#>  2 ./R/dupree_class… ./R/dupree_class…       4       6     44    101 0.218 
+#>  3 ./R/dupree_code_… ./R/dupree_code_…       6      12    124    218 0.213 
+#>  4 ./R/dupree_code_… ./R/dupree.R           12       2    218     69 0.200 
+#>  5 ./R/dupree_class… ./R/dupree_code_…       4       6     44    124 0.192 
+#>  6 ./R/dupree_class… ./R/dupree_code_…       9       6    178    124 0.182 
+#>  7 ./R/dupree_class… ./R/dupree_class…       4       9     44    178 0.181 
+#>  8 ./R/dupree_code_… ./R/dupree_code_…       4       6     89    124 0.174 
+#>  9 ./R/dupree_class… ./R/dupree_class…       7       9    135    178 0.168 
+#> 10 ./R/dupree_numbe… ./R/dupree.R            3       2     42     69 0.167 
+#> 11 ./R/dupree_class… ./R/dupree_data_…       2       5     19     45 0.163 
+#> 12 ./R/dupree_class… ./R/dupree_class…       6       7    101    135 0.156 
+#> 13 ./R/dupree_class… ./R/dupree_code_…       9       3    178     62 0.154 
+#> 14 ./R/dupree_class… ./R/dupree_code_…       4       1     44     14 0.141 
+#> 15 ./R/dupree_code_… ./R/dupree_data_…       3       5     62     45 0.140 
+#> 16 ./R/dupree_code_… ./R/dupree_code_…       1       6     14    124 0.129 
+#> 17 ./R/dupree_code_… ./R/dupree_code_…       3       4     62     89 0.125 
+#> 18 ./R/dupree_class… ./R/dupree_class…       2       4     19     44 0.105 
+#> 19 ./R/dupree_class… ./R/dupree_numbe…       2       2     19     24 0.0811
+#> 20 ./R/dupree_data_… ./R/dupree.R            5       2     45     69 0.0678
 ```
 
 ``` r
 # Analyse all R source code in the package (ignoring the tests directory)
 dupree_package(".", min_block_size = 20)
-#> # A tibble: 14 x 7
-#>    file_a            file_b            block_a block_b line_a line_b score
-#>    <chr>             <chr>               <int>   <int>  <int>  <int> <dbl>
-#>  1 ./R/dupree_numbe… ./R/dupree_numbe…      16      17     24     42 0.265
-#>  2 ./R/dupree_numbe… ./R/dupree_numbe…      17      16     42     24 0.265
-#>  3 ./R/dupree_class… ./R/dupree_class…      13      25     35     75 0.242
-#>  4 ./R/dupree_class… ./R/dupree_class…      25      13     75     35 0.242
-#>  5 ./R/dupree_code_… ./R/dupree_code_…      41      72    104    174 0.222
-#>  6 ./R/dupree_code_… ./R/dupree_code_…      72      41    174    104 0.222
-#>  7 ./R/dupree_class… ./R/dupree_code_…      38      32    124     54 0.215
-#>  8 ./R/dupree_code_… ./R/dupree_class…      32      38     54    124 0.215
-#>  9 ./R/dupree.R      ./R/dupree_code_…      57      72     69    174 0.200
-#> 10 ./R/dupree_class… ./R/dupree_class…      30      38    106    124 0.198
-#> 11 ./R/dupree_code_… ./R/dupree_code_…      35      41     77    104 0.179
-#> 12 ./R/dupree_class… ./R/dupree_data_…       8      22     15     41 0.163
-#> 13 ./R/dupree_data_… ./R/dupree_class…      22       8     41     15 0.163
-#> 14 ./R/dupree_code_… ./R/dupree_class…       7      13     10     35 0.16
+#> # A tibble: 20 x 7
+#>    file_a            file_b            block_a block_b line_a line_b  score
+#>    <chr>             <chr>               <int>   <int>  <int>  <int>  <dbl>
+#>  1 ./R/dupree_numbe… ./R/dupree_numbe…       2       3     24     42 0.265 
+#>  2 ./R/dupree_class… ./R/dupree_class…       4       6     44    101 0.218 
+#>  3 ./R/dupree_code_… ./R/dupree_code_…       6      12    124    218 0.213 
+#>  4 ./R/dupree_code_… ./R/dupree.R           12       2    218     69 0.200 
+#>  5 ./R/dupree_class… ./R/dupree_code_…       4       6     44    124 0.192 
+#>  6 ./R/dupree_class… ./R/dupree_code_…       9       6    178    124 0.182 
+#>  7 ./R/dupree_class… ./R/dupree_class…       4       9     44    178 0.181 
+#>  8 ./R/dupree_code_… ./R/dupree_code_…       4       6     89    124 0.174 
+#>  9 ./R/dupree_class… ./R/dupree_class…       7       9    135    178 0.168 
+#> 10 ./R/dupree_numbe… ./R/dupree.R            3       2     42     69 0.167 
+#> 11 ./R/dupree_class… ./R/dupree_data_…       2       5     19     45 0.163 
+#> 12 ./R/dupree_class… ./R/dupree_class…       6       7    101    135 0.156 
+#> 13 ./R/dupree_class… ./R/dupree_code_…       9       3    178     62 0.154 
+#> 14 ./R/dupree_class… ./R/dupree_code_…       4       1     44     14 0.141 
+#> 15 ./R/dupree_code_… ./R/dupree_data_…       3       5     62     45 0.140 
+#> 16 ./R/dupree_code_… ./R/dupree_code_…       1       6     14    124 0.129 
+#> 17 ./R/dupree_code_… ./R/dupree_code_…       3       4     62     89 0.125 
+#> 18 ./R/dupree_class… ./R/dupree_class…       2       4     19     44 0.105 
+#> 19 ./R/dupree_class… ./R/dupree_numbe…       2       2     19     24 0.0811
+#> 20 ./R/dupree_data_… ./R/dupree.R            5       2     45     69 0.0678
 ```
