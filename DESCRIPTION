@@ -23,7 +23,8 @@ Imports:
     magrittr,
     methods,
     stringdist (>= 0.9.5.5),
-    lintr (>= 2.0.0)
+    lintr (>= 2.0.0),
+    rlang
 RoxygenNote: 6.1.1
 VignetteBuilder: knitr
 Collate:

@@ -64,7 +64,9 @@ methods::setMethod(
       .Object@blocks <- default_code_table
     } else {
       # we ensure that the code blocks are ordered by file and then block
-      .Object@blocks <- dplyr::arrange_(blocks, ~file, ~block)
+      .Object@blocks <- dplyr::arrange(
+        blocks, .data[["file"]], .data[["block"]]
+      )
     }
 
     methods::validObject(.Object)
@@ -159,10 +161,11 @@ methods::setMethod(
 #' @param        ...           Further parameters for passing to
 #'   `stringdist::seq_sim`.
 #'
-#' @importFrom   dplyr         arrange_   desc   mutate_   select_
+#' @importFrom   dplyr         arrange   desc   mutate   select
 #' @importFrom   purrr         map_df
 #' @importFrom   stringdist    seq_sim
 #' @importFrom   tibble        tibble
+#' @importFrom   rlang         .data
 #'
 #' @noRd
 #'
@@ -195,17 +198,19 @@ find_indexes_of_best_matches <- function(enum_codes, method = "lcs", ...) {
     sim_func
   ) %>%
     # ensure the index of A is less than the index of B
-    dplyr::mutate_(
-      temp = ~ pmax(index_a, index_b),
-      index_a = ~ pmin(index_a, index_b),
-      index_b = ~temp
+    dplyr::mutate(
+      temp = pmax(.data[["index_a"]], .data[["index_b"]]),
+      index_a = pmin(.data[["index_a"]], .data[["index_b"]]),
+      index_b = .data[["temp"]]
     ) %>%
-    dplyr::select_(~ -temp) %>%
+    dplyr::select(
+      -.data[["temp"]]
+    ) %>%
     # only return each code-block pair once
     unique() %>%
     # order the code-block pairs by decreasing score
-    dplyr::arrange_(
-      ~ dplyr::desc(score), ~index_a, ~index_b
+    dplyr::arrange(
+      dplyr::desc(.data[["score"]]), .data[["index_a"]], .data[["index_b"]]
     )
 
   scores
