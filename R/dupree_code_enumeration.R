@@ -132,16 +132,6 @@ summarise_enumerated_blocks <- function(df) {
 
 ###############################################################################
 
-#' is_plain_r_file
-#'
-#' @importFrom   tools         file_ext
-#'
-#' @noRd
-#'
-is_plain_r_file <- function(file) {
-  tools::file_ext(file) %in% c("r", "R")
-}
-
 #' import_parsed_code_blocks_from_one_file
 #'
 #' @importFrom   dplyr         filter_
