@@ -100,7 +100,7 @@ remove_trivial_code_symbols <- function(df) {
   )
 
   df %>%
-    dplyr::filter_(~!token %in% drop_tokens)
+    dplyr::filter_(~ !token %in% drop_tokens)
 }
 
 #' enumerate_code_symbols
@@ -112,7 +112,7 @@ remove_trivial_code_symbols <- function(df) {
 enumerate_code_symbols <- function(df) {
   # TODO: check for `text` column
   df %>%
-    dplyr::mutate_(symbol_enum = ~as.integer(factor(text)))
+    dplyr::mutate_(symbol_enum = ~ as.integer(factor(text)))
 }
 
 #' summarise_enumerated_blocks
@@ -125,8 +125,8 @@ summarise_enumerated_blocks <- function(df) {
   df %>%
     dplyr::group_by_(~file, ~block, ~start_line) %>%
     dplyr::summarise_(
-      enumerated_code = ~list(c(symbol_enum)),
-      block_size = ~dplyr::n()
+      enumerated_code = ~ list(c(symbol_enum)),
+      block_size = ~ dplyr::n()
     )
 }
 
@@ -153,7 +153,7 @@ import_parsed_code_blocks_from_one_file <- function(file) {
   file %>%
     lintr::get_source_expressions() %>%
     get_localised_parsed_code_blocks() %>%
-    dplyr::filter_(~!token %in% "COMMENT")
+    dplyr::filter_(~ !token %in% "COMMENT")
 }
 
 #' import_parsed_code_blocks
@@ -200,7 +200,7 @@ preprocess_code_blocks <- function(files, min_block_size = 20) {
   blocks <- files %>%
     import_parsed_code_blocks() %>%
     tokenize_code_blocks() %>%
-    filter_(~block_size >= min_block_size)
+    filter_(~ block_size >= min_block_size)
 
   methods::new("EnumeratedCodeTable", blocks)
 }
