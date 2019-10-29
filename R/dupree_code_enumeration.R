@@ -145,12 +145,13 @@ is_plain_r_file <- function(file) {
 #' import_parsed_code_blocks_from_one_file
 #'
 #' @importFrom   dplyr         filter_
+#' @importFrom   lintr         get_source_expressions
 #'
 #' @noRd
 #'
 import_parsed_code_blocks_from_one_file <- function(file) {
   file %>%
-    get_source_expressions() %>%
+    lintr::get_source_expressions() %>%
     get_localised_parsed_code_blocks() %>%
     dplyr::filter_(~!token %in% "COMMENT")
 }

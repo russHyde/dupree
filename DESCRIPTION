@@ -16,26 +16,19 @@ Suggests: testthat,
     rmarkdown,
     tidyr,
     covr
-Imports: dplyr,
+Imports:
+    dplyr,
     purrr,
     tibble,
     magrittr,
     methods,
     stringdist,
-    rex,
-    xml2,
-    xmlparsedata
+    lintr (>= 2.0.0)
 RoxygenNote: 6.1.1
 VignetteBuilder: knitr
 Collate:
-    'lintr_utils.R'
-    'aaa_lintr.R'
     'dupree.R'
     'dupree_classes.R'
     'dupree_data_validity.R'
     'dupree_code_enumeration.R'
     'dupree_number_of_code_blocks.R'
-    'lintr_extract.R'
-    'lintr_lint.R'
-    'lintr_source_expressions.R'
-    'lintr_tree-utils.R'
