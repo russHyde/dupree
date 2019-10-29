@@ -125,14 +125,9 @@ test_that("summarise_enumerated_blocks", {
     file = "some/file.R", block = 1L, start_line = 1L,
     enumerated_code = list(c(60L)), block_size = 1L
   )
-  expect_equal(
-    # drop the `enumerated_code` list-of-vectors because expect_equal can't
-    #   match these parts of tibbles easily
-    object = dplyr::select_if(
-      summarise_enumerated_blocks(input),
-      function(x) !is.list(x)
-    ),
-    expected = expected[, -4],
+  expect_equal_listy_tbl(
+    object = summarise_enumerated_blocks(input),
+    expected = expected, #[, -4],
     info = "block with a single code symbol"
   )
 })
