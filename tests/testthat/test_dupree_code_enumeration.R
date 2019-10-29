@@ -55,6 +55,10 @@ test_that("Number of code blocks in imported files", {
       "comment-only .R file should provide no code-blocks: preprocess workflow"
     )
   )
+
+  # All the following tests fail with lintr<2.0.0 since they require parsing
+  # data from .Rmd files with non-R-codeblocks or with an absence of codeblocks
+
   # Empty .Rmd files:
   # - No content
   empty_rmd <- file.path("testdata", "empty.Rmd")
@@ -62,12 +66,14 @@ test_that("Number of code blocks in imported files", {
     nrow(import_parsed_code_blocks(empty_rmd)) == 0,
     info = "empty .Rmd file should import no code-blocks"
   )
+
   # - Only header
   header_rmd <- file.path("testdata", "header_only.Rmd")
   expect_true(
     nrow(import_parsed_code_blocks(header_rmd)) == 0,
     info = "header-only .Rmd file should import no code-blocks"
   )
+
   # - Only text
   text_rmd <- file.path("testdata", "text_only.Rmd")
   expect_true(
@@ -76,13 +82,6 @@ test_that("Number of code blocks in imported files", {
   )
 
   # - Some non-R blocks
-  skip(
-    # All subsequent tests in this `test_that` block will not be ran
-    paste(
-      "`dupree` is not yet implemented for R-markdown files that contain",
-      "non-R code blocks"
-    )
-  )
   non_r_rmd <- file.path("testdata", "non_r_blocks.Rmd")
   expect_true(
     nrow(import_parsed_code_blocks(non_r_rmd)) == 0,
@@ -126,14 +125,9 @@ test_that("summarise_enumerated_blocks", {
     file = "some/file.R", block = 1L, start_line = 1L,
     enumerated_code = list(c(60L)), block_size = 1L
   )
-  expect_equal(
-    # drop the `enumerated_code` list-of-vectors because expect_equal can't
-    #   match these parts of tibbles easily
-    object = dplyr::select_if(
-      summarise_enumerated_blocks(input),
-      function(x) !is.list(x)
-    ),
-    expected = expected[, -4],
+  expect_equal_listy_tbl(
+    object = summarise_enumerated_blocks(input),
+    expected = expected, #[, -4],
     info = "block with a single code symbol"
   )
 })

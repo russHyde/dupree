@@ -132,45 +132,16 @@ summarise_enumerated_blocks <- function(df) {
 
 ###############################################################################
 
-#' is_plain_r_file
-#'
-#' @importFrom   tools         file_ext
-#'
-#' @noRd
-#'
-is_plain_r_file <- function(file) {
-  tools::file_ext(file) %in% c("r", "R")
-}
-
-#' get_source_expressions
-#'
-#' Depends on lintr (dev version of lintr if used with R-markdown files or
-#' empty R files).
-#'
-#' @importFrom   lintr         get_source_expressions
-#' @include      dupree_number_of_code_blocks.R
-#'
-#' @noRd
-#'
-get_source_expressions <- function(file) {
-  num_blocks <- count_code_blocks(file)
-
-  if (num_blocks > 0 || is_plain_r_file(file)) {
-    lintr::get_source_expressions(file)
-  } else {
-    list()
-  }
-}
-
 #' import_parsed_code_blocks_from_one_file
 #'
 #' @importFrom   dplyr         filter_
+#' @importFrom   lintr         get_source_expressions
 #'
 #' @noRd
 #'
 import_parsed_code_blocks_from_one_file <- function(file) {
   file %>%
-    get_source_expressions() %>%
+    lintr::get_source_expressions() %>%
     get_localised_parsed_code_blocks() %>%
     dplyr::filter_(~ !token %in% "COMMENT")
 }

@@ -198,14 +198,14 @@ find_indexes_of_best_matches <- function(enum_codes, method = "lcs", ...) {
     dplyr::mutate_(
       temp = ~ pmax(index_a, index_b),
       index_a = ~ pmin(index_a, index_b),
-      index_b = ~ temp
+      index_b = ~temp
     ) %>%
     dplyr::select_(~ -temp) %>%
     # only return each code-block pair once
     unique() %>%
     # order the code-block pairs by decreasing score
     dplyr::arrange_(
-      ~ dplyr::desc(score), ~ index_a, ~ index_b
+      ~ dplyr::desc(score), ~index_a, ~index_b
     )
 
   scores

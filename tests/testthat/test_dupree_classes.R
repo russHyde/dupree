@@ -4,18 +4,9 @@ context("Tests for classes in `dupree` package")
 
 ###############################################################################
 
-#' Since you can't compare two `tbl_df` objects when they contain a list as a
-#' column using expect_equal or all.equal
-#'
-#' @importFrom   tidyr         unnest
-#'
-expect_equal_listy_tbl <- function(object, expected, ...) {
-  expect_equal(
-    object = tidyr::unnest(object),
-    expected = tidyr::unnest(expected),
-    ...
-  )
-}
+# - Note that we use seq(4) rather than 1:4 to define the integer-sequence for
+# alignment by stringdist::seq_sim; there is an issue with lazily-evaluated
+# values in tests on stringdist - see NEWS for version 0.9.5.4 of stringdist
 
 ###############################################################################
 
@@ -49,7 +40,7 @@ test_that("EnumeratedCodeTable: construction / validity", {
   )
 
   my_blocks <- tibble::tibble(
-    file = "a", block = 1, start_line = 1, enumerated_code = list(1:5)
+    file = "a", block = 1, start_line = 1, enumerated_code = list(seq(5))
   )
 
   expect_equal_listy_tbl(
@@ -68,6 +59,7 @@ test_that("EnumeratedCodeTable: find_best_match_for_single_block", {
 })
 
 test_that("EnumeratedCodeTable: find_best_matches", {
+  # - return at most 1 best-hit for each block
 
   empty_results <- tibble::tibble(
     file_a = character(0), file_b = character(0), block_a = integer(0),
@@ -91,12 +83,12 @@ test_that("EnumeratedCodeTable: find_best_matches", {
   # No overlap between the symbols in the two code-blocks
   my_blocks <- tibble::tibble(
     file = "a", block = 1:2, start_line = 1:2,
-    enumerated_code = list(1:3, 4L)
+    enumerated_code = list(seq(3), 4L)
   )
   my_code_table <- new("EnumeratedCodeTable", my_blocks)
 
   expect_equal(
-    find_best_matches(new("EnumeratedCodeTable", my_blocks)),
+    find_best_matches(my_code_table),
     tibble::tibble(
       file_a = "a", file_b = "a", block_a = 1L, block_b = 2L,
       line_a = 1L, line_b = 2L, score = 0
@@ -105,7 +97,7 @@ test_that("EnumeratedCodeTable: find_best_matches", {
   )
   expect_equal(
     find_best_matches(new("EnumeratedCodeTable", my_blocks[2:1, ])),
-    find_best_matches(new("EnumeratedCodeTable", my_blocks)),
+    find_best_matches(my_code_table),
     info = paste(
       "when two blocks are mutually-best-matches from the same file,",
       "return a single row (we use block_a <= block_b)"
@@ -115,7 +107,7 @@ test_that("EnumeratedCodeTable: find_best_matches", {
   # Identical code-blocks
   identical_blocks <- tibble::tibble(
     file = "a", block = 1:2, start_line = 1:2,
-    enumerated_code = list(1:3, 1:3)
+    enumerated_code = list(seq(3), seq(3))
   )
   identical_code_table <- new("EnumeratedCodeTable", identical_blocks)
   expect_equal(
@@ -128,13 +120,15 @@ test_that("EnumeratedCodeTable: find_best_matches", {
   )
 
   # Overlapping, non-equal code-blocks, using longest-common-subsequence
+
   nonequal_blocks <- tibble::tibble(
     file = letters[1:2], block = 1L, start_line = 1L,
-    enumerated_code = list(1:4, 3:6)
+    enumerated_code = list(seq(4), seq(3, 6))
     # seq_dist_LCS = 4; length_sum = 8; seq_sim = 1 - dist/len_sum = 0.5
   )
+  nonequal_blocks_tbl <- new("EnumeratedCodeTable", nonequal_blocks)
   expect_equal(
-    find_best_matches(new("EnumeratedCodeTable", nonequal_blocks)),
+    find_best_matches(nonequal_blocks_tbl),
     tibble::tibble(
       file_a = c("a"), file_b = c("b"), block_a = 1L, block_b = 1L,
       line_a = 1L, line_b = 1L, score = 1 / 2
@@ -143,7 +137,7 @@ test_that("EnumeratedCodeTable: find_best_matches", {
   )
   expect_equal(
     find_best_matches(new("EnumeratedCodeTable", nonequal_blocks[2:1, ])),
-    find_best_matches(new("EnumeratedCodeTable", nonequal_blocks)),
+    find_best_matches(nonequal_blocks_tbl),
     info = paste(
       "when two blocks are mutually-best-matches from different files,",
       "return a single row (we use file_a <= file_b alphanumerically)"
@@ -152,7 +146,7 @@ test_that("EnumeratedCodeTable: find_best_matches", {
 
   # - if there's 1 or fewer blocks, return an empty data-frame
   single_block <- tibble::tibble(
-    file = "a", block = 1L, start_line = 1L, enumerated_code = list(1:4)
+    file = "a", block = 1L, start_line = 1L, enumerated_code = list(seq(4))
   )
   single_code_table <- new("EnumeratedCodeTable", single_block)
   expect_equal(
@@ -170,7 +164,7 @@ test_that("EnumeratedCodeTable: find_best_matches", {
     # A) 1-2-3-4-5
     # B) 1-2-3-6-5 (A-B: 2)
     # C) 7-2-3-4-8 (A-C: 4; B-C: 6)
-    enumerated_code = list(1:5, c(1:3, 6, 5), c(7, 2:4, 8))
+    enumerated_code = list(seq(5), c(seq(3), 6, 5), c(7, seq(2, 4), 8))
   )
   triple_code_table <- new("EnumeratedCodeTable", three_blocks)
   expect_equal(
