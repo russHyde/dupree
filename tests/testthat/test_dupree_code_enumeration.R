@@ -127,7 +127,7 @@ test_that("summarise_enumerated_blocks", {
   )
   expect_equal_listy_tbl(
     object = summarise_enumerated_blocks(input),
-    expected = expected, #[, -4],
+    expected = expected,
     info = "block with a single code symbol"
   )
 })
