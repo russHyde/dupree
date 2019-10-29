@@ -83,6 +83,7 @@ get_localised_parsed_code_blocks <- function(source_exprs) {
 #' `remove_trivial_code_symbols`
 #'
 #' @importFrom   dplyr         filter
+#' @importFrom   rlang         .data
 #'
 #' @noRd
 #'
@@ -100,33 +101,37 @@ remove_trivial_code_symbols <- function(df) {
   )
 
   df %>%
-    dplyr::filter_(~ !token %in% drop_tokens)
+    dplyr::filter(!.data[["token"]] %in% drop_tokens)
 }
 
 #' enumerate_code_symbols
 #'
-#' @importFrom   dplyr         mutate_
+#' @importFrom   dplyr         mutate
+#' @importFrom   rlang         .data
 #'
 #' @noRd
 #'
 enumerate_code_symbols <- function(df) {
   # TODO: check for `text` column
   df %>%
-    dplyr::mutate_(symbol_enum = ~ as.integer(factor(text)))
+    dplyr::mutate(symbol_enum = as.integer(factor(.data[["text"]])))
 }
 
 #' summarise_enumerated_blocks
 #'
-#' @importFrom   dplyr         group_by_   summarise_   n
+#' @importFrom   dplyr         group_by   summarise   n
+#' @importFrom   rlang         .data
 #'
 #' @noRd
 #'
 summarise_enumerated_blocks <- function(df) {
   df %>%
-    dplyr::group_by_(~file, ~block, ~start_line) %>%
-    dplyr::summarise_(
-      enumerated_code = ~ list(c(symbol_enum)),
-      block_size = ~ dplyr::n()
+    dplyr::group_by(
+      .data[["file"]], .data[["block"]], .data[["start_line"]]
+    ) %>%
+    dplyr::summarise(
+      enumerated_code = list(c(.data[["symbol_enum"]])),
+      block_size = dplyr::n()
     )
 }
 
@@ -134,8 +139,9 @@ summarise_enumerated_blocks <- function(df) {
 
 #' import_parsed_code_blocks_from_one_file
 #'
-#' @importFrom   dplyr         filter_
+#' @importFrom   dplyr         filter
 #' @importFrom   lintr         get_source_expressions
+#' @importFrom   rlang         .data
 #'
 #' @noRd
 #'
@@ -143,7 +149,7 @@ import_parsed_code_blocks_from_one_file <- function(file) {
   file %>%
     lintr::get_source_expressions() %>%
     get_localised_parsed_code_blocks() %>%
-    dplyr::filter_(~ !token %in% "COMMENT")
+    dplyr::filter(!.data[["token"]] %in% "COMMENT")
 }
 
 #' import_parsed_code_blocks
@@ -180,7 +186,7 @@ tokenize_code_blocks <- function(block_df) {
 #'   must be present in a code-block if that block is to be used in
 #'   code-duplication detection.
 #'
-#' @importFrom   dplyr         filter_
+#' @importFrom   dplyr         filter
 #' @importFrom   methods       new
 #' @include      dupree_classes.R
 #'
@@ -190,7 +196,9 @@ preprocess_code_blocks <- function(files, min_block_size = 20) {
   blocks <- files %>%
     import_parsed_code_blocks() %>%
     tokenize_code_blocks() %>%
-    filter_(~ block_size >= min_block_size)
+    dplyr::filter(
+      .data[["block_size"]] >= min_block_size
+    )
 
   methods::new("EnumeratedCodeTable", blocks)
 }
