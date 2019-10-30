@@ -8,3 +8,4 @@
 ^codecov\.yml$
 ^presentations$
 ^appveyor\.yml$
+^cran-comments.md$
