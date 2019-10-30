@@ -85,11 +85,13 @@ Note that you can do something similar using the functions `dupree_dir` and
 (if you are analysing a package) `dupree_package`.
 
 ```{r}
-# Analyse all R files except those in the tests directory:
-dupree_dir(".", min_block_size = 20, filter = "tests", invert = TRUE)
+# Analyse all R files except those in the tests / presentations directories:
+dupree_dir(
+  ".", min_block_size = 20, filter = "tests|presentations", invert = TRUE
+)
 ```
 
 ```{r}
-# Analyse all R source code in the package (ignoring the tests directory)
+# Analyse all R source code in the package (only looking at the ./R/ directory)
 dupree_package(".", min_block_size = 20)
 ```
