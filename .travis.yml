@@ -4,13 +4,21 @@ language: R
 sudo: false
 cache: packages
 
-env:
-- LINTR_COMMENT_BOT=true
-
 r_github_packages:
   - jimhester/lintr
+  - jimhester/covr
 
-after_success:
-  - R CMD INSTALL $PKG_TARBALL
-  - Rscript -e 'lintr::lint_package()'
-  - Rscript -e 'covr::codecov()'
+matrix:
+  include:
+  - r: devel
+  - r: release
+    env:
+    - LINTR_COMMENT_BOT=true
+    after_success:
+    - R CMD INSTALL $PKG_TARBALL
+    - Rscript -e 'lintr::lint_package()'
+    - Rscript -e 'covr::codecov()'
+  - r: oldrel
+  - r: 3.4
+  - r: 3.3
+  - r: 3.2
