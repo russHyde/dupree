@@ -6,7 +6,11 @@
 
 # Class definition: `EnumeratedCodeTable`
 
-#' EnumeratedCodeTable
+#' An S4 class to represent the code blocks as strings of integers
+#'
+#' @name   EnumeratedCodeTable-class
+#' @slot   blocks   A tbl_df with columns `file`, `block`, `start_line` and
+#'   `enumerated_code`
 #'
 methods::setClass("EnumeratedCodeTable", slots = list(blocks = "tbl_df"))
 

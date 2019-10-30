@@ -72,24 +72,68 @@ devtools::install_github("russHyde/dupree")
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+To run `dupree` over a set of R files, you can use the `dupree()`,
+`dupree_dir()` or `dupree_package()` functions. For example, to identify
+duplication within all of the `.R` and `.Rmd` files for the `dupree` package
+you could run the following:
 
 ```{r example}
 ## basic example code
 library(dupree)
+
 files <- dir(pattern = "*.R(md)*$", recursive = TRUE)
-dupree(files, min_block_size = 20)
+
+dupree(files)
 ```
+
+Any top-level code blocks that contain at least 
+`r formals(dupree)$min_block_size` non-trivial tokens are
+included in the above analysis (a token being a function or variable name, an
+operator etc; but ignoring comments, white-space and some really common tokens:
+`[](){}-+$@:,=`, `<-`, `&&` etc). To be more restrictive, you could consider
+larger code-blocks within just the `./R/` source code directory:
+
+```{r}
+# R-source code files in the ./R/ directory of the dupree package:
+source_files <- dir(path = "R", pattern = "*.R(md)*$", full.names = TRUE)
+
+# analyse any code blocks that contain at least 40 non-trivial tokens
+dupree(source_files, min_block_size = 40)
+```
+
+For each (sufficiently big) code block in the provided files, `dupree` will
+return the code-block that is most-similar to it (although any given block
+may be present in the results multiple times if it is the closest match for
+several other code blocks).
+
+Code block pairs with a higher `score` value are more similar. `score` lies in
+the range [0, 1]; and is calculated by the
+[`stringdist`](https://github.com/markvanderloo/stringdist) package: matching
+occurs at the token level: the token "my_data" is no more similar to the token
+"myData" than it is to "x".
+
+If you find code-block-pairs with a similarity score much greater than 0.5
+there is probably some commonality that could be abstracted away.
+
+----
 
 Note that you can do something similar using the functions `dupree_dir` and
 (if you are analysing a package) `dupree_package`.
 
 ```{r}
-# Analyse all R files except those in the tests directory:
-dupree_dir(".", min_block_size = 20, filter = "tests", invert = TRUE)
+# Analyse all R files in the R/ directory:
+dupree_dir(".", filter = "R/")
 ```
 
 ```{r}
-# Analyse all R source code in the package (ignoring the tests directory)
-dupree_package(".", min_block_size = 20)
+# Analyse all R files except those in the tests / presentations directories:
+# `dupree_dir` uses grep-like arguments
+dupree_dir(
+  ".", filter = "tests|presentations", invert = TRUE
+)
+```
+
+```{r}
+# Analyse all R source code in the package (only looking at the ./R/ directory)
+dupree_package(".")
 ```
