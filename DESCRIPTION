@@ -1,11 +1,11 @@
 Package: dupree
 Type: Package
-Title: Identify duplicated R code in a project
-Version: 0.1.0.9000
+Title: Identify Duplicated R Code in a Project
+Version: 0.2.0
 Author: Russ Hyde, University of Glasgow
 Maintainer: Russ Hyde <russ.hyde.data@gmail.com>
-Description: `dupree` helps identify code blocks that have a high level
-  of duplication within a set of R files.
+Description: Identifies code blocks that have a high level of similarity
+  within a set of R files.
 URL: https://github.com/russHyde/dupree
 BugReports: https://github.com/russHyde/dupree/issues
 License: MIT + file LICENSE
@@ -25,7 +25,6 @@ Imports:
     lintr (>= 2.0.0),
     rlang
 RoxygenNote: 6.1.1
-VignetteBuilder: knitr
 Collate:
     'dupree.R'
     'dupree_classes.R'
