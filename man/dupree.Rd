@@ -2,7 +2,7 @@
 % Please edit documentation in R/dupree.R
 \name{dupree}
 \alias{dupree}
-\title{Newer version of the duplicate detection workflow}
+\title{Detect code duplication between the code-blocks in a set of files}
 \usage{
 dupree(files, min_block_size = 20, ...)
 }
@@ -20,5 +20,44 @@ measurement.}
 \item{...}{Unused at present.}
 }
 \description{
-Newer version of the duplicate detection workflow
+This function identifies all code blocks in a set of files and then computes
+a similarity score between those code blocks to help identify functions /
+classes that have a high level of duplication, and could possibly be
+refactored.
+}
+\details{
+Code blocks under a size threshold are disregarded before analysis (the size threshold is
+controlled by \code{min_block_size}); and only top-level code blocks are
+considered.
+
+Every sufficiently large code block in the input files will be present in
+the results at least once. If code-block X and code-block Y are present in
+a row of the resulting data-frame, then either X is the closest match to Y
+or Y is the closest match to X (or possibly both) according to the
+similarity score; as such some code blocks may be present multiple times in
+the results.
+
+Similarity between code blocks is calculated using the
+longest-common-subsequence (\code{lcs}) measure from the package
+\code{stringdist}. This measure is applied to a tokenised version of the
+code-blocks. That is, each function name / operator / variable in the code
+blocks is converted to a unique integer so that a code block can be
+represented as a vector of integers and the \code{lcs} measure is applied to
+each pair of these vectors.
+}
+\examples{
+# To quantify duplication between the top-level code blocks in a file
+example_file <- system.file("extdata", "duplicated.R", package = "dupree")
+dup <- dupree(example_file, min_block_size = 10)
+dup
+
+# For the blocks with the highest duplication, we print the first four lines:
+readLines(example_file)[dup$line_a[1] + c(0:3)]
+readLines(example_file)[dup$line_b[1] + c(0:3)]
+
+# The code blocks in the example file are rather small, so if
+# `min_block_size` is too large, none of the code blocks will be analysed
+# and the results will be empty:
+dupree(example_file, min_block_size = 40)
+
 }

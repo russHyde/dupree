@@ -23,19 +23,70 @@
 
 ###############################################################################
 
-#' Newer version of the duplicate detection workflow
+#' Detect code duplication between the code-blocks in a set of files
+#'
+#' This function identifies all code blocks in a set of files and then computes
+#' a similarity score between those code blocks to help identify functions /
+#' classes that have a high level of duplication, and could possibly be
+#' refactored.
+#'
+#' Code blocks under a size threshold are disregarded before analysis (the size
+#' threshold is controlled by \code{min_block_size}); and only top-level code
+#' blocks are considered.
+#'
+#' Every sufficiently large code block in the input files will be present in
+#' the results at least once. If code-block X and code-block Y are present in
+#' a row of the resulting data-frame, then either X is the closest match to Y
+#' or Y is the closest match to X (or possibly both) according to the
+#' similarity score; as such some code blocks may be present multiple times in
+#' the results.
+#'
+#' Similarity between code blocks is calculated using the
+#' longest-common-subsequence (\code{lcs}) measure from the package
+#' \code{stringdist}. This measure is applied to a tokenised version of the
+#' code-blocks. That is, each function name / operator / variable in the code
+#' blocks is converted to a unique integer so that a code block can be
+#' represented as a vector of integers and the \code{lcs} measure is applied to
+#' each pair of these vectors.
 #'
 #' @param        files         A set of files over which code-duplication
 #'   should be measured.
+#'
 #' @param        min_block_size   `dupree` uses a notion of non-trivial
 #'   symbols.  These are the symbols / code-words that remain after filtering
 #'   out really common symbols like `<-`, `,`, etc. After filtering out these
 #'   symbols from each code-block, only those blocks containing at least
 #'   `min_block_size` symbols are used in the inter-block code-duplication
 #'   measurement.
+#'
 #' @param        ...           Unused at present.
 #'
+#' @value        A tibble. Each row in the table summarises the comparison
+#' between two code-blocks (block 'a' and block 'b') in the input files. Each
+#' code block is indicated by: i) the file (file_a / file_b) that contains it;
+#' ii) its position within that file (block_a / block_b; 1 being the first
+#' code block in a given file); and iii) the line where that code block starts
+#' in that file (line_a / line_b). The pairs of code blocks are ordered
+#' according to a similarity score. Any match that is returned is either the
+#' top hit for block 'a' or for block 'b' (or both).
+#'
 #' @importFrom   magrittr      %>%
+#'
+#' @examples
+#' # To quantify duplication between the top-level code blocks in a file
+#' example_file <- system.file("extdata", "duplicated.R", package = "dupree")
+#' dup <- dupree(example_file, min_block_size = 10)
+#' dup
+#'
+#' # For the block-pair with the highest duplication, we print the first four
+#' # lines:
+#' readLines(example_file)[dup$line_a[1] + c(0:3)]
+#' readLines(example_file)[dup$line_b[1] + c(0:3)]
+#'
+#' # The code blocks in the example file are rather small, so if
+#' # `min_block_size` is too large, none of the code blocks will be analysed
+#' # and the results will be empty:
+#' dupree(example_file, min_block_size = 40)
 #'
 #' @export
 
@@ -63,6 +114,8 @@ dupree <- function(files, min_block_size = 20, ...) {
 #'
 #' @param       recursive     Should we consider files in subdirectories as
 #' well?
+#'
+#' @seealso     dupree
 #'
 #' @export
 
@@ -92,6 +145,8 @@ dupree_dir <- function(path,
 #'
 #' @param        package       The name or path to the package that is to be
 #' checked.
+#'
+#' @seealso      dupree
 #'
 #' @export
 
