@@ -22,3 +22,6 @@ measurement.}
 `dupree_package` - run duplicate-code detection over all files in a
 package's `R` directory
 }
+\seealso{
+dupree
+}

@@ -32,3 +32,6 @@ well?}
 \description{
 `dupree_dir` - run duplicate-code detection over all R-files in a directory
 }
+\seealso{
+dupree
+}
