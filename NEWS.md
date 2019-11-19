@@ -1,3 +1,5 @@
+# dupree (development version)
+
 # dupree 0.2.0
 
 * lintr dependence pinned to lintr=2.0.0 so that non-R-codeblocks and empty R
