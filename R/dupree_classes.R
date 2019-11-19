@@ -54,10 +54,8 @@ methods::setValidity("EnumeratedCodeTable", .is_enumerated_code_table)
 methods::setMethod(
   "initialize",
   "EnumeratedCodeTable",
-  # nolint start
   function(.Object, blocks = NULL, ...) {
     .Object <- methods::callNextMethod(...)
-    # nolint end
 
     default_code_table <- tibble::tibble(
       file = character(0), block = integer(0), start_line = integer(0),

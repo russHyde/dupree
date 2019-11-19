@@ -2,6 +2,10 @@ linters: with_defaults(
   commented_code_linter = NULL,
   line_length_linter(80),
   object_length_linter(40),
-  open_curly_linter = NULL,
-  spaces_left_parentheses_linter = NULL
+  object_name_linter(c("snake_case", "CamelCase")),
+  undesirable_function_linter = undesirable_function_linter(),
+  undesirable_operator_linter = undesirable_operator_linter()
+  )
+exclusions: list(
+  "inst/extdata/duplicated.R", "tests/testthat.R"
   )
