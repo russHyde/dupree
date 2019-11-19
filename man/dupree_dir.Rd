@@ -2,14 +2,15 @@
 % Please edit documentation in R/dupree.R
 \name{dupree_dir}
 \alias{dupree_dir}
-\title{`dupree_dir` - run duplicate-code detection over all R-files in a directory}
+\title{Run duplicate-code detection over all R-files in a directory}
 \usage{
-dupree_dir(path, min_block_size = 20, filter = NULL, ...,
+dupree_dir(path = ".", min_block_size = 20, filter = NULL, ...,
   recursive = TRUE)
 }
 \arguments{
-\item{path}{A directory. All files in this directory that
-have a ".R", ".r" or ".Rmd" extension will be checked for code duplication.}
+\item{path}{A directory (By default the current working
+directory). All files in this directory that have a ".R", ".r" or ".Rmd"
+extension will be checked for code duplication.}
 
 \item{min_block_size}{`dupree` uses a notion of non-trivial
 symbols.  These are the symbols / code-words that remain after filtering
@@ -18,19 +19,19 @@ symbols from each code-block, only those blocks containing at least
 `min_block_size` symbols are used in the inter-block code-duplication
 measurement.}
 
-\item{filter}{A pattern for use in grep - this is used to
-keep only particular files: eg, filter = "classes" would compare files with
+\item{filter}{A pattern for use in grep - this is used to keep
+only particular files: eg, filter = "classes" would compare files with
 `classes` in the filename}
 
-\item{...}{Further arguments for grep. For example,
-`filter = "test", invert = TRUE` would disregard all files with `test` in
-the file-path.}
+\item{...}{Further arguments for grep. For example, `filter
+= "test", invert = TRUE` would disregard all files with `test` in the
+file-path.}
 
 \item{recursive}{Should we consider files in subdirectories as
 well?}
 }
 \description{
-`dupree_dir` - run duplicate-code detection over all R-files in a directory
+Run duplicate-code detection over all R-files in a directory
 }
 \seealso{
 dupree
