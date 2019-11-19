@@ -152,9 +152,7 @@ dupree_dir <- function(path,
 
 dupree_package <- function(package,
                            min_block_size = 20) {
-  # nolint start
   dupree_dir(package, min_block_size, filter = paste0(package, "/R/"))
-  # nolint end
 }
 
 ###############################################################################
