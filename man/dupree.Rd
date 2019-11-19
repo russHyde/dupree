@@ -21,13 +21,13 @@ measurement.}
 }
 \value{
 A tibble. Each row in the table summarises the comparison
-between two code-blocks (block 'a' and block 'b') in the input files. Each
-code-block in the pair is indicated by: i) the file (file_a / file_b) that
-contains it; ii) its position within that file (block_a / block_b; 1 being
-the first code-block in a given file); and iii) the line where that
-code-block starts in that file (line_a / line_b). The pairs of code-blocks
-are ordered by decreasing similarity. Any match that is returned is either
-the top hit for block 'a' or for block 'b' (or both).
+  between two code-blocks (block 'a' and block 'b') in the input files. Each
+  code-block in the pair is indicated by: i) the file (file_a / file_b) that
+  contains it; ii) its position within that file (block_a / block_b; 1 being
+  the first code-block in a given file); and iii) the line where that
+  code-block starts in that file (line_a / line_b). The pairs of code-blocks
+  are ordered by decreasing similarity. Any match that is returned is either
+  the top hit for block 'a' or for block 'b' (or both).
 }
 \description{
 This function identifies all code-blocks in a set of files and then computes

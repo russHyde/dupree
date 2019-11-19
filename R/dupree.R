@@ -62,13 +62,13 @@
 #' @param        ...           Unused at present.
 #'
 #' @return        A tibble. Each row in the table summarises the comparison
-#' between two code-blocks (block 'a' and block 'b') in the input files. Each
-#' code-block in the pair is indicated by: i) the file (file_a / file_b) that
-#' contains it; ii) its position within that file (block_a / block_b; 1 being
-#' the first code-block in a given file); and iii) the line where that
-#' code-block starts in that file (line_a / line_b). The pairs of code-blocks
-#' are ordered by decreasing similarity. Any match that is returned is either
-#' the top hit for block 'a' or for block 'b' (or both).
+#'   between two code-blocks (block 'a' and block 'b') in the input files. Each
+#'   code-block in the pair is indicated by: i) the file (file_a / file_b) that
+#'   contains it; ii) its position within that file (block_a / block_b; 1 being
+#'   the first code-block in a given file); and iii) the line where that
+#'   code-block starts in that file (line_a / line_b). The pairs of code-blocks
+#'   are ordered by decreasing similarity. Any match that is returned is either
+#'   the top hit for block 'a' or for block 'b' (or both).
 #'
 #' @importFrom   magrittr      %>%
 #'
@@ -97,29 +97,30 @@ dupree <- function(files, min_block_size = 20, ...) {
 
 ###############################################################################
 
-#' `dupree_dir` - run duplicate-code detection over all R-files in a directory
+#' Run duplicate-code detection over all R-files in a directory
 #'
 #' @inheritParams   dupree
 #'
-#' @param        path          A directory. All files in this directory that
-#' have a ".R", ".r" or ".Rmd" extension will be checked for code duplication.
+#' @param        path          A directory (By default the current working
+#'   directory). All files in this directory that have a ".R", ".r" or ".Rmd"
+#'   extension will be checked for code duplication.
 #'
-#' @param        filter        A pattern for use in grep - this is used to
-#' keep only particular files: eg, filter = "classes" would compare files with
-#' `classes` in the filename
+#' @param        filter        A pattern for use in grep - this is used to keep
+#'   only particular files: eg, filter = "classes" would compare files with
+#'   `classes` in the filename
 #'
-#' @param        ...           Further arguments for grep. For example,
-#' `filter = "test", invert = TRUE` would disregard all files with `test` in
-#' the file-path.
+#' @param        ...           Further arguments for grep. For example, `filter
+#'   = "test", invert = TRUE` would disregard all files with `test` in the
+#'   file-path.
 #'
 #' @param       recursive     Should we consider files in subdirectories as
-#' well?
+#'   well?
 #'
 #' @seealso     dupree
 #'
 #' @export
 
-dupree_dir <- function(path,
+dupree_dir <- function(path = ".",
                        min_block_size = 20,
                        filter = NULL,
                        ...,
@@ -138,19 +139,19 @@ dupree_dir <- function(path,
 
 ###############################################################################
 
-#' `dupree_package` - run duplicate-code detection over all files in a
-#' package's `R` directory
+#' Run duplicate-code detection over all files in the `R` directory of a
+#' package
 #'
 #' @inheritParams   dupree
 #'
 #' @param        package       The name or path to the package that is to be
-#' checked.
+#'   checked (By default the current working directory).
 #'
 #' @seealso      dupree
 #'
 #' @export
 
-dupree_package <- function(package,
+dupree_package <- function(package = ".",
                            min_block_size = 20) {
   dupree_dir(package, min_block_size, filter = paste0(package, "/R/"))
 }
