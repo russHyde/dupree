@@ -1,6 +1,6 @@
 context("Integration tests for `dupree_dir()`")
 
-test_that("All .R files in a directory's subdirs are assessed by dupree_dir()", {
+test_that("All .R files in subdirs are assessed by dupree_dir()", {
   # the test-package "anRpackage" contains
   # - ./R/anRpackage-internal.R
   # - and ./inst/dir1/R/dont_dup_me.R

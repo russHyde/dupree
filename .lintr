@@ -7,5 +7,8 @@ linters: with_defaults(
   undesirable_operator_linter = undesirable_operator_linter()
   )
 exclusions: list(
-  "inst/extdata/duplicated.R", "tests/testthat.R"
+  "inst/extdata/duplicated.R",
+  "tests/testthat.R",
+  # ? should be able to exclude a directory in lintr
+  "tests/testthat/testdata/anRpackage/R/anRpackage-internal.R"
   )
