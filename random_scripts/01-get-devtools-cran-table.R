@@ -54,35 +54,13 @@ import_dev_package_names <- function(url) {
 
 ###############################################################################
 
-define_repositories <- function(x) {
-  stop("TODO: define_repositories() function")
-  # Define a table containing package-name, remote-GH-url and
-  # local-repo-filepath (based on the filtered cran table)
-
-}
-
-clone_repositories <- function(x) {
-  stop("TODO: clone_packages() function")
-
-  # Clone each package from its remote to its local repo (but only if we
-  # haven't already cloned it)
-}
-
-###############################################################################
-
-run_script <- function(repo_dir, task_view_url) {
-  # download lots of CRAN packages from github
-  # the chosen packages relate to package development
-  # the repos will be stored in repo_dir
-  #
-  # we select packages that
+run_script <- function(task_view_url, results_dir) {
+  # We identify packages that
   # - are currently on CRAN
   # - have a github URL
   # - are mentioned on the ROpenSci software development task view
-  #
-  # we download repos using git2r
 
-  stopifnot(dir.exists(repo_dir))
+  stopifnot(dir.exists(results_dir))
 
   cran_gh <- import_github_cran_table()
   dev_packages <- import_dev_package_names(task_view_url)
@@ -91,29 +69,25 @@ run_script <- function(repo_dir, task_view_url) {
     cran_gh, Package %in% dev_packages
   )
 
-  repo_details <- define_repositories(dev_pkg_table)
-  clone_repositories(repo_details)
-
-  list(
+  readr::write_tsv(
     dev_pkg_table,
-    repo_details
+    file.path(results_dir, "dev-pkg-table.tsv")
   )
 }
 
 ###############################################################################
 
 # pkgs require for running the script (not the packages that are analysed here)
-load_packages(c("dplyr", "git2r", "tibble", "magrittr", "xml2"))
+load_packages(c("dplyr", "tibble", "magrittr", "readr", "xml2"))
 
-repo_dump <- normalizePath(
-  file.path("~", "temp", "dev-tools-analysis")
-)
+results_dir <- "results"
+
 task_view_url <- paste(
   "https://raw.githubusercontent.com/ropensci",
   "PackageDevelopment/master/PackageDevelopment.ctv",
   sep = "/"
 )
 
-run_script(repo_dump, task_view_url)
+run_script(task_view_url, results_dir)
 
 ###############################################################################
