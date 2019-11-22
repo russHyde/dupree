@@ -1,15 +1,5 @@
 ###############################################################################
 
-load_packages <- function(pkgs) {
-  for (pkg in pkgs) {
-    suppressPackageStartupMessages(
-      library(pkg, character.only = TRUE)
-    )
-  }
-}
-
-###############################################################################
-
 contains_github <- function(x) {
   grepl("github\\.com", x)
 }
@@ -54,13 +44,13 @@ import_dev_package_names <- function(url) {
 
 ###############################################################################
 
-run_script <- function(task_view_url, results_dir) {
+run_script <- function(task_view_url, results_file) {
   # We identify packages that
   # - are currently on CRAN
   # - have a github URL
   # - are mentioned on the ROpenSci software development task view
 
-  stopifnot(dir.exists(results_dir))
+  stopifnot(dir.exists(dirname(results_file)))
 
   cran_gh <- import_github_cran_table()
   dev_packages <- import_dev_package_names(task_view_url)
@@ -69,25 +59,22 @@ run_script <- function(task_view_url, results_dir) {
     cran_gh, Package %in% dev_packages
   )
 
-  readr::write_tsv(
-    dev_pkg_table,
-    file.path(results_dir, "dev-pkg-table.tsv")
-  )
+  readr::write_tsv(dev_pkg_table, results_file)
 }
+
+###############################################################################
+
+source("utils.R")
+source("config.R")
 
 ###############################################################################
 
 # pkgs require for running the script (not the packages that are analysed here)
 load_packages(c("dplyr", "tibble", "magrittr", "readr", "xml2"))
 
-results_dir <- "results"
-
-task_view_url <- paste(
-  "https://raw.githubusercontent.com/ropensci",
-  "PackageDevelopment/master/PackageDevelopment.ctv",
-  sep = "/"
+run_script(
+  task_view_url = config[["task_view_url"]],
+  results_file = config[["cran_details_file"]]
 )
-
-run_script(task_view_url, results_dir)
 
 ###############################################################################
