@@ -5,7 +5,24 @@ contains_github <- function(x) {
 }
 
 format_cran_table <- function(x) {
-  tibble::as_tibble(x[, !duplicated(colnames(x))])
+  # NOTE: newlines were observed in some columns of the cran dataframe, these
+  # make it difficult to save the dataframe to a .tsv and then reimport it.
+  # I suspect this might be due to a bug in `readr::write_tsv`. To get around
+  # it, we just convert all whitespace to single-spaces.
+
+  remove_dup_cols <- function(df) df[, !duplicated(colnames(df))]
+  collapse_ws <- function(x) gsub("[ \t\r\n]+", " ", x)
+
+  # - Remove any columns that have duplicate names
+  # - Convert column names to tidier versions of them (dots / whitespace to
+  # underscores, snake_case)
+  # - Strip repeated whitespace
+  # - Convert all whitespace characters to single-space
+  x %>%
+    remove_dup_cols() %>%
+    tibble::as_tibble() %>%
+    janitor::clean_names() %>%
+    dplyr::mutate_if(is.character, collapse_ws)
 }
 
 import_github_cran_table <- function() {
@@ -22,7 +39,7 @@ import_github_cran_table <- function() {
 
   # format & restrict to github repos
   format_cran_table(raw_cran) %>%
-    dplyr::filter(contains_github(URL) | contains_github(BugReports))
+    dplyr::filter(contains_github(url) | contains_github(bug_reports))
 }
 
 ###############################################################################
@@ -56,7 +73,7 @@ run_script <- function(task_view_url, results_file) {
   dev_packages <- import_dev_package_names(task_view_url)
 
   dev_pkg_table <- dplyr::filter(
-    cran_gh, Package %in% dev_packages
+    cran_gh, package %in% dev_packages
   )
 
   readr::write_tsv(dev_pkg_table, results_file)
@@ -70,7 +87,9 @@ source("config.R")
 ###############################################################################
 
 # pkgs require for running the script (not the packages that are analysed here)
-load_packages(c("dplyr", "tibble", "magrittr", "readr", "xml2"))
+load_packages(
+  c("dplyr", "janitor", "tibble", "magrittr", "readr", "xml2")
+)
 
 run_script(
   task_view_url = config[["task_view_url"]],
