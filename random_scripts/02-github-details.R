@@ -1,17 +1,29 @@
 ###############################################################################
 
 get_repo_from_comma_sepd_string <- function(x) {
-  # input could be "http[s]://[www.]github.com/<user>/<repo>[/issues], some-other-url"
+  # input could be
+  # "http[s]://[www.]github.com/<user>/<repo>[/issues][,] some-other-url"
 
   # For each entry in the vector of strings, return the first URL that is of
   # the form
-  # "http[s]://[www.]github.com/<user>/repo[/<subdir>]"
-  # But strip off the optional <subdir> section (eg, issues)
+  # "http[s]://[www.]github.com/<user>/repo[/<subdir>|#<section>]"
+  # But strip off the optional <subdir> and #<section> (eg, issues)
 
-  stringr::str_extract(
-    string = x,
-    pattern = "(https*://(www\\.)*github.com/[^/]+/[^/]+)"
-  )
+  extract_and_get_first_match <- function(urls) {
+    s <- urls %>%
+      stringr::str_extract(
+        pattern = "(https*://(www\\.)*github.com/[^/]+/[^/]+)"
+      ) %>%
+      stringr::str_replace_all(
+        pattern = "^(.*)#.*$", replacement = "\\1"
+      )
+
+    s[!is.na(s) & nchar(s) > 0][1]
+  }
+
+  strsplit(x, "[, ]") %>%
+    purrr::map(trimws) %>%
+    purrr::map_chr(extract_and_get_first_match)
 }
 
 test_get_repo <- function() {
@@ -19,15 +31,26 @@ test_get_repo <- function() {
     message("testthat should be installed")
     return()
   }
-  testthat::test_that("repo_parser_works - single URLs", {
+  testthat::test_that("repo_parser_works", {
+    # Deal with:
+    # - http and https,
+    # - www present or absent,
+    # - trailing slash after reponame
+    # - subdirectories (<repo>/issues)
+    # - subsections (<repo>#readme)
+    # - comma-space-separated (", ") and space-separated (" ") URLs
     repo <- "github.com/abc/123"
     ht <- c("https://", "http://")
     www <- c("", "www.")
-    suffixes <- c("", "/", "/issues")
+    prefixes <- c(
+      "", "https://not-a-github.com/repo, ", "https://some-other-repo.com "
+    )
+    suffixes <- c("", "/", "/issues", ",", ", ", "/, ", "#readme")
 
-    grid <- expand.grid(ht, www, repo, suffixes)
+    grid <- expand.grid(prefixes, ht, www, repo, suffixes)
     input_url <- do.call(paste0, grid)
-    expected_url <- do.call(paste0, grid[1:3])
+    expected_url <- do.call(paste0, grid[2:4])
+
     testthat::expect_equal(
       get_repo_from_comma_sepd_string(input_url),
       expected_url
