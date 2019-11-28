@@ -5,10 +5,11 @@
 ###############################################################################
 
 clone_repositories <- function(x) {
-  stop("TODO: clone_repositories() function")
-
   # Clone each package from its remote to its local repo (but only if we
   # haven't already cloned it)
+  purrr::walk2(
+    x$remote_repo, x$local_repo, git2r::clone
+  )
 }
 
 ###############################################################################
@@ -22,7 +23,15 @@ run_script <- function(repo_details_file) {
     repo_details_file, col_types = readr::cols(.default = "c")
   )
 
-  clone_repositories(repo_details)
+  # Columns of `repo_details`:
+  # (package, remote_repo, local_repo)
+  stopifnot(
+    all(c("package", "remote_repo", "local_repo") %in% colnames(repo_details))
+  )
+
+  repo_details %>%
+    dplyr::filter(!dir.exists(local_repo)) %>%
+    clone_repositories()
 }
 
 ###############################################################################
@@ -33,7 +42,7 @@ source("config.R")
 ###############################################################################
 
 # pkgs require for running the script (not the packages that are analysed here)
-load_packages(c("dplyr", "git2r", "magrittr", "readr", "tibble"))
+load_packages(c("dplyr", "git2r", "magrittr", "purrr", "readr"))
 
 run_script(
   repo_details_file = config[["repo_details_file"]]
