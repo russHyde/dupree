@@ -15,7 +15,11 @@ config <- list(
     "https://raw.githubusercontent.com/ropensci",
     "PackageDevelopment/master/PackageDevelopment.ctv",
     sep = "/"
-  )
+  ),
+  min_block_sizes = c(100, 40), #, 20, 10)
+  # The github repo for package `logging` does not conform to standard R
+  # package structure, and causes dupree to fail.
+  drop = "logging"
 )
 
 config <- append(

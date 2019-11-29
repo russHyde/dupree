@@ -61,11 +61,12 @@ import_dev_package_names <- function(url) {
 
 ###############################################################################
 
-run_script <- function(task_view_url, results_file) {
+run_script <- function(task_view_url, results_file, drop_pkgs = NULL) {
   # We identify packages that
   # - are currently on CRAN
   # - have a github URL
   # - are mentioned on the ROpenSci software development task view
+  # - are not in a set of packages for dropping from the pipeline (drop_pkgs)
 
   stopifnot(dir.exists(dirname(results_file)))
 
@@ -73,7 +74,8 @@ run_script <- function(task_view_url, results_file) {
   dev_packages <- import_dev_package_names(task_view_url)
 
   dev_pkg_table <- dplyr::filter(
-    cran_gh, package %in% dev_packages
+    cran_gh,
+    package %in% dev_packages & !package %in% drop_pkgs
   )
 
   readr::write_tsv(dev_pkg_table, results_file)
@@ -93,7 +95,8 @@ load_packages(
 
 run_script(
   task_view_url = config[["task_view_url"]],
-  results_file = config[["cran_details_file"]]
+  results_file = config[["cran_details_file"]],
+  drop_pkgs = config[["drop"]]
 )
 
 ###############################################################################
