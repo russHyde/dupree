@@ -6,17 +6,25 @@
 ###############################################################################
 
 config <- list(
+  # Store results summaries here:
   results_dir = file.path("results"),
+
+  # Store results for individual packages in subdirs of this:
+  pkg_results_dir = file.path("results", "packages"),
+
   repo_dir = normalizePath(
     file.path("~", "temp", "dev-tools-analysis"),
     mustWork = FALSE
   ),
+
   task_view_url = paste(
     "https://raw.githubusercontent.com/ropensci",
     "PackageDevelopment/master/PackageDevelopment.ctv",
     sep = "/"
   ),
+
   min_block_sizes = c(100, 40), #, 20, 10)
+
   # The github repo for package `logging` does not conform to standard R
   # package structure, and causes dupree to fail.
   drop = "logging"

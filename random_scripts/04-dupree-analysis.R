@@ -111,7 +111,7 @@ load_packages(
 
 main(
   repo_details_file = config[["repo_details_file"]],
-  results_dir = config[["results_dir"]],
+  results_dir = config[["pkg_results_dir"]],
   min_block_sizes = config[["min_block_sizes"]]
 )
 
