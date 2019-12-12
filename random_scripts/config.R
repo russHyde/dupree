@@ -38,6 +38,9 @@ config <- append(
     ),
     cran_details_file = file.path(
       config[["results_dir"]], "dev-pkg-table.tsv"
+    ),
+    all_pkg_benchmarks_file = file.path(
+      config[["results_dir"]], "dev-pkg-benchmarks.tsv"
     )
   )
 )
