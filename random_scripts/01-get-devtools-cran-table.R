@@ -61,7 +61,7 @@ import_dev_package_names <- function(url) {
 
 ###############################################################################
 
-run_script <- function(task_view_url, results_file, drop_pkgs = NULL) {
+main <- function(task_view_url, results_file, drop_pkgs = NULL) {
   # We identify packages that
   # - are currently on CRAN
   # - have a github URL
@@ -93,7 +93,7 @@ load_packages(
   c("dplyr", "janitor", "tibble", "magrittr", "readr", "xml2")
 )
 
-run_script(
+main(
   task_view_url = config[["task_view_url"]],
   results_file = config[["cran_details_file"]],
   drop_pkgs = config[["drop"]]

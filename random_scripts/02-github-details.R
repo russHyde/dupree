@@ -90,7 +90,7 @@ run_tests <- function() {
 
 ###############################################################################
 
-run_script <- function(cran_details_file, repo_dir, results_file) {
+main <- function(cran_details_file, repo_dir, results_file) {
   message("Running script ...")
   # Converts a CRAN table that only contains github-hosted packages into a
   # table containing  (package-name, remote-repo, local-repo) paths.
@@ -116,7 +116,7 @@ load_packages(c("dplyr", "magrittr", "readr", "stringr", "tibble"))
 
 run_tests()
 
-run_script(
+main(
   cran_details_file = config[["cran_details_file"]],
   repo_dir = config[["repo_dir"]],
   results_file = config[["repo_details_file"]]

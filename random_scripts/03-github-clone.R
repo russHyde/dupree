@@ -14,7 +14,7 @@ clone_repositories <- function(x) {
 
 ###############################################################################
 
-run_script <- function(repo_details_file) {
+main <- function(repo_details_file) {
   # Takes a table of CRAN packages of the form (package-name, remote-repo,
   # local-repo) and clones each package from it's remote location to the
   # specified local location.
@@ -44,7 +44,7 @@ source("config.R")
 # pkgs require for running the script (not the packages that are analysed here)
 load_packages(c("dplyr", "git2r", "magrittr", "purrr", "readr"))
 
-run_script(
+main(
   repo_details_file = config[["repo_details_file"]]
 )
 

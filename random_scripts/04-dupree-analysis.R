@@ -12,7 +12,7 @@ run_benchmark_workflow <- function(local_repo, results_file, min_block_sizes) {
   # Error in stream_delim_(df, path, ..., bom = bom, quote_escape =
   # quote_escape) :
   # Don't know how to handle vector of type list.
-  # Calls: run_script ... <Anonymous> -> write_delim -> stream_delim ->
+  # Calls: main ... <Anonymous> -> write_delim -> stream_delim ->
   # stream_delim_
   # In addition: There were 50 or more warnings (use warnings() to see the
   # first 50)
@@ -71,7 +71,7 @@ run_workflow <- function(package, local_repo, results_dir, min_block_sizes) {
 
 # --
 
-run_script <- function(repo_details_file, results_dir, min_block_sizes) {
+main <- function(repo_details_file, results_dir, min_block_sizes) {
 
   repo_details <- readr::read_tsv(
     repo_details_file, col_types = readr::cols(.default = "c")
@@ -109,7 +109,7 @@ load_packages(
   c("bench", "dplyr", "dupree", "git2r", "magrittr", "readr", "tibble")
 )
 
-run_script(
+main(
   repo_details_file = config[["repo_details_file"]],
   results_dir = config[["results_dir"]],
   min_block_sizes = config[["min_block_sizes"]]
