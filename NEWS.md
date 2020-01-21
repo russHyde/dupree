@@ -1,5 +1,8 @@
 # dupree (development version)
 
+* `dupree_package()` asserts that a path has a DESCRIPTION and an R/ subdir
+  present (#57, @russHyde)
+
 # dupree 0.2.0
 
 * lintr dependence pinned to lintr=2.0.0 so that non-R-codeblocks and empty R

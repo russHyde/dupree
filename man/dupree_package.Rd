@@ -19,8 +19,8 @@ symbols from each code-block, only those blocks containing at least
 measurement.}
 }
 \description{
-Run duplicate-code detection over all files in the `R` directory of a
-package
+The function fails if the path does not look like a typical R package (it
+should have both an R/ subdirectory and a DESCRIPTION file present).
 }
 \seealso{
 dupree

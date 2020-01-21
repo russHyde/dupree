@@ -87,7 +87,6 @@
 #' # `min_block_size` is too large, none of the code-blocks will be analysed
 #' # and the results will be empty:
 #' dupree(example_file, min_block_size = 40)
-#'
 #' @export
 
 dupree <- function(files, min_block_size = 20, ...) {
@@ -142,6 +141,9 @@ dupree_dir <- function(path = ".",
 #' Run duplicate-code detection over all files in the `R` directory of a
 #' package
 #'
+#' The function fails if the path does not look like a typical R package (it
+#' should have both an R/ subdirectory and a DESCRIPTION file present).
+#'
 #' @inheritParams   dupree
 #'
 #' @param        package       The name or path to the package that is to be
@@ -149,10 +151,17 @@ dupree_dir <- function(path = ".",
 #'
 #' @seealso      dupree
 #'
+#' @include      utils.R
 #' @export
 
 dupree_package <- function(package = ".",
                            min_block_size = 20) {
+  if (!has_description(package)) {
+    stop("The path ", package, "is not an R package (no DESCRIPTION)")
+  }
+  if (!has_r_source_dir(package)) {
+    stop("The path", package, "is not an R package (no R/ subdir)")
+  }
   dupree_dir(package, min_block_size, filter = paste0(package, "/R/"))
 }
 
