@@ -27,6 +27,7 @@ Imports:
     rlang
 RoxygenNote: 6.1.1
 Collate:
+    'utils.R'
     'dupree.R'
     'dupree_classes.R'
     'dupree_data_validity.R'
