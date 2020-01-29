@@ -10,6 +10,11 @@ test_that("All .R files in subdirs are assessed by dupree_dir()", {
     file.path("R", "anRpackage-internal.R"),
     file.path("inst", "dir1", "R", "dont_dup_me.R")
   )
+  expect_is(
+    dupree_dir(package),
+    "dups",
+    info = "dupree_dir should return with class `dups`"
+  )
   expect_silent(
     dupree_dir(package)
   )
