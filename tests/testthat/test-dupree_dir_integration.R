@@ -14,7 +14,7 @@ test_that("All .R files in subdirs are assessed by dupree_dir()", {
     dupree_dir(package)
   )
 
-  dups <- dupree_dir(package)
+  dups <- as.data.frame(dupree_dir(package))
   observed_files <- unique(c(dups$file_a, dups$file_b))
   expected_files <- file.path(package, r_content)
   expect_equal(
