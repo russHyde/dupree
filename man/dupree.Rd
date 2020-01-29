@@ -70,5 +70,4 @@ readLines(example_file)[dup$line_b[1] + c(0:3)]
 # `min_block_size` is too large, none of the code-blocks will be analysed
 # and the results will be empty:
 dupree(example_file, min_block_size = 40)
-
 }

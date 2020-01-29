@@ -91,7 +91,8 @@
 
 dupree <- function(files, min_block_size = 20, ...) {
   preprocess_code_blocks(files, min_block_size) %>%
-    find_best_matches()
+    find_best_matches() %>%
+    as_dups()
 }
 
 ###############################################################################
@@ -133,6 +134,7 @@ dupree_dir <- function(path = ".",
   } else {
     files[grep(pattern = filter, x = files, ...)]
   }
+
   dupree(keep_files, min_block_size)
 }
 
