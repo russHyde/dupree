@@ -32,3 +32,4 @@ Collate:
     'dupree_classes.R'
     'dupree_data_validity.R'
     'dupree_code_enumeration.R'
+    'dups-class.R'

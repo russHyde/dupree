@@ -10,11 +10,16 @@ test_that("All .R files in subdirs are assessed by dupree_dir()", {
     file.path("R", "anRpackage-internal.R"),
     file.path("inst", "dir1", "R", "dont_dup_me.R")
   )
+  expect_is(
+    dupree_dir(package),
+    "dups",
+    info = "dupree_dir should return with class `dups`"
+  )
   expect_silent(
     dupree_dir(package)
   )
 
-  dups <- dupree_dir(package)
+  dups <- as.data.frame(dupree_dir(package))
   observed_files <- unique(c(dups$file_a, dups$file_b))
   expected_files <- file.path(package, r_content)
   expect_equal(
