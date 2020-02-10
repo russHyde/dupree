@@ -1,5 +1,13 @@
 # dupree (development version)
 
+## Breaking changes
+
+* `dupree()`, `dupree_package()` and `dupree_dir()` return an object of class
+  `dups`, rather than a data-frame. Methods to convert to data.frame / tibble
+  are provided though (#60, @russHyde)
+
+## Minor changes and bug-fixes
+
 * `dupree_package()` asserts that a path has a DESCRIPTION and an R/ subdir
   present (#57, @russHyde)
 
