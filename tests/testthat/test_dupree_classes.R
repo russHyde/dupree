@@ -30,7 +30,7 @@ test_that("EnumeratedCodeTable: construction / validity", {
     enumerated_code = list()
   )
 
-  expect_equal_listy_tbl(
+  expect_equal_tbl(
     new("EnumeratedCodeTable")@blocks,
     default_blocks,
     info = paste(
@@ -46,7 +46,7 @@ test_that("EnumeratedCodeTable: construction / validity", {
     enumerated_code = list(as.integer(c(1, 2, 3, 4, 5)))
   )
 
-  expect_equal_listy_tbl(
+  expect_equal_tbl(
     new("EnumeratedCodeTable", my_blocks)@blocks,
     my_blocks,
     info = paste(
