@@ -125,7 +125,8 @@ test_that("summarise_enumerated_blocks", {
     file = "some/file.R", block = 1L, start_line = 1L,
     enumerated_code = list(c(60L)), block_size = 1L
   )
-  expect_equal_listy_tbl(
+  # some attribute differences may be expected
+  expect_equivalent_tbl(
     object = summarise_enumerated_blocks(input),
     expected = expected,
     info = "block with a single code symbol"
