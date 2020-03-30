@@ -9,10 +9,12 @@ context("Tests duplicated code analysis functions")
   # in parse_code_blocks
   exprs <- setNames(
     Map(
-      function(s) list(
+      function(s) {
+        list(
           content = s,
           parsed_content = getParseData(parse(text = s))
-        ),
+        )
+      },
       strs
     ),
     NULL
