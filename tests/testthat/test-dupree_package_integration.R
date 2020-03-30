@@ -20,6 +20,14 @@ test_that("`dupree_package` results only include files from <my_pkg>/R/", {
   )
 })
 
+test_that("`dupree_package` fails early when passed a nonexisting dir", {
+  expect_error(
+    dupree_package(file.path("testdata", "not_a_dir")),
+    regexp = "does not exist",
+    info = "dir passed to `dupree_package` should exist"
+  )
+})
+
 test_that("`dupree_package` fails when passed a non-R package structure", {
 
   # There must be a DESCRIPTION file present

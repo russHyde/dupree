@@ -1,5 +1,13 @@
 context("Integration tests for `dupree_dir()`")
 
+test_that("`dupree_dir` fails early when passed a nonexisting dir", {
+  expect_error(
+    dupree_dir(file.path("testdata", "not-a-dir")),
+    regexp = "does not exist",
+    info = "dir passed to `dupree_dir` should exist"
+  )
+})
+
 test_that("All .R files in subdirs are assessed by dupree_dir()", {
   # the test-package "anRpackage" contains
   # - ./R/anRpackage-internal.R
