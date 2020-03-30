@@ -8,6 +8,9 @@
 
 ## Minor changes and bug-fixes
 
+* Rewrote a test-helper function that compares two list-column-containing
+  tibbles: necessitated by a change in dplyr=1.0 (#65, @russHyde)
+
 * `dupree_package()` asserts that a path has a DESCRIPTION and an R/ subdir
   present (#57, @russHyde)
 
