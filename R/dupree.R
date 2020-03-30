@@ -125,6 +125,9 @@ dupree_dir <- function(path = ".",
                        filter = NULL,
                        ...,
                        recursive = TRUE) {
+  if (!dir.exists(path)) {
+    stop("The path ", path, " does not exist")
+  }
   files <- dir(
     path,
     pattern = ".*(.R|.r|.Rmd)$", full.names = TRUE, recursive = recursive
@@ -158,11 +161,14 @@ dupree_dir <- function(path = ".",
 
 dupree_package <- function(package = ".",
                            min_block_size = 20) {
+  if (!dir.exists(package)) {
+    stop("The path ", package, " does not exist")
+  }
   if (!has_description(package)) {
-    stop("The path ", package, "is not an R package (no DESCRIPTION)")
+    stop("The path ", package, " is not an R package (no DESCRIPTION)")
   }
   if (!has_r_source_dir(package)) {
-    stop("The path", package, "is not an R package (no R/ subdir)")
+    stop("The path", package, " is not an R package (no R/ subdir)")
   }
   dupree_dir(package, min_block_size, filter = paste0(package, "/R/"))
 }

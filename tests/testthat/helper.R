@@ -26,7 +26,8 @@ expect_equal_tbl <- function(object, expected, ..., info = NULL) {
 
 expect_equivalent_tbl <- function(object, expected, ..., info = NULL) {
   expect_equal_tbl(
-    object, expected, ..., check.attributes = FALSE, info = info
+    object, expected, ...,
+    check.attributes = FALSE, info = info
   )
 }
 
