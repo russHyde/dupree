@@ -5,18 +5,18 @@
 \title{Run duplicate-code detection over all files in the `R` directory of a
 package}
 \usage{
-dupree_package(package = ".", min_block_size = 20)
+dupree_package(package = ".", min_block_size = 40)
 }
 \arguments{
 \item{package}{The name or path to the package that is to be
 checked (By default the current working directory).}
 
-\item{min_block_size}{`dupree` uses a notion of non-trivial
+\item{min_block_size}{\code{dupree} uses a notion of non-trivial
 symbols.  These are the symbols / code-words that remain after filtering
-out really common symbols like `<-`, `,`, etc. After filtering out these
-symbols from each code-block, only those blocks containing at least
-`min_block_size` symbols are used in the inter-block code-duplication
-measurement.}
+out really common symbols like \code{<-}, \code{,}, etc. After filtering
+out these symbols from each code-block, only those blocks containing at
+least \code{min_block_size} symbols are used in the inter-block
+code-duplication measurement.}
 }
 \description{
 The function fails if the path does not look like a typical R package (it

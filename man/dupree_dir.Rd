@@ -6,7 +6,7 @@
 \usage{
 dupree_dir(
   path = ".",
-  min_block_size = 20,
+  min_block_size = 40,
   filter = NULL,
   ...,
   recursive = TRUE
@@ -17,12 +17,12 @@ dupree_dir(
 directory). All files in this directory that have a ".R", ".r" or ".Rmd"
 extension will be checked for code duplication.}
 
-\item{min_block_size}{`dupree` uses a notion of non-trivial
+\item{min_block_size}{\code{dupree} uses a notion of non-trivial
 symbols.  These are the symbols / code-words that remain after filtering
-out really common symbols like `<-`, `,`, etc. After filtering out these
-symbols from each code-block, only those blocks containing at least
-`min_block_size` symbols are used in the inter-block code-duplication
-measurement.}
+out really common symbols like \code{<-}, \code{,}, etc. After filtering
+out these symbols from each code-block, only those blocks containing at
+least \code{min_block_size} symbols are used in the inter-block
+code-duplication measurement.}
 
 \item{filter}{A pattern for use in grep - this is used to keep
 only particular files: eg, filter = "classes" would compare files with

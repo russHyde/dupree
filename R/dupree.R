@@ -52,23 +52,24 @@
 #' @param        files         A set of files over which code-duplication
 #'   should be measured.
 #'
-#' @param        min_block_size   `dupree` uses a notion of non-trivial
+#' @param        min_block_size   \code{dupree} uses a notion of non-trivial
 #'   symbols.  These are the symbols / code-words that remain after filtering
-#'   out really common symbols like `<-`, `,`, etc. After filtering out these
-#'   symbols from each code-block, only those blocks containing at least
-#'   `min_block_size` symbols are used in the inter-block code-duplication
-#'   measurement.
+#'   out really common symbols like \code{<-}, \code{,}, etc. After filtering
+#'   out these symbols from each code-block, only those blocks containing at
+#'   least \code{min_block_size} symbols are used in the inter-block
+#'   code-duplication measurement.
 #'
 #' @param        ...           Unused at present.
 #'
-#' @return        A tibble. Each row in the table summarises the comparison
-#'   between two code-blocks (block 'a' and block 'b') in the input files. Each
-#'   code-block in the pair is indicated by: i) the file (file_a / file_b) that
-#'   contains it; ii) its position within that file (block_a / block_b; 1 being
-#'   the first code-block in a given file); and iii) the line where that
-#'   code-block starts in that file (line_a / line_b). The pairs of code-blocks
-#'   are ordered by decreasing similarity. Any match that is returned is either
-#'   the top hit for block 'a' or for block 'b' (or both).
+#' @return        A \code{tibble}. Each row in the table summarises the
+#'   comparison between two code-blocks (block 'a' and block 'b') in the input
+#'   files. Each code-block in the pair is indicated by: i) the file
+#'   (\code{file_a} / \code{file_b}) that contains it; ii) its position within
+#'   that file (\code{block_a} / \code{block_b}; 1 being the first code-block in
+#'   a given file); and iii) the line where that code-block starts in that file
+#'   (\code{line_a} / \code{line_b}). The pairs of code-blocks are ordered by
+#'   decreasing similarity. Any match that is returned is either the top hit for
+#'   block 'a' or for block 'b' (or both).
 #'
 #' @importFrom   magrittr      %>%
 #'
@@ -89,7 +90,7 @@
 #' dupree(example_file, min_block_size = 40)
 #' @export
 
-dupree <- function(files, min_block_size = 20, ...) {
+dupree <- function(files, min_block_size = 40, ...) {
   preprocess_code_blocks(files, min_block_size) %>%
     find_best_matches() %>%
     as_dups()
@@ -121,7 +122,7 @@ dupree <- function(files, min_block_size = 20, ...) {
 #' @export
 
 dupree_dir <- function(path = ".",
-                       min_block_size = 20,
+                       min_block_size = 40,
                        filter = NULL,
                        ...,
                        recursive = TRUE) {
@@ -160,7 +161,7 @@ dupree_dir <- function(path = ".",
 #' @export
 
 dupree_package <- function(package = ".",
-                           min_block_size = 20) {
+                           min_block_size = 40) {
   if (!dir.exists(package)) {
     stop("The path ", package, " does not exist")
   }
