@@ -1,4 +1,4 @@
-# dupree (development version)
+# dupree 0.3.0
 
 ## Breaking changes
 
