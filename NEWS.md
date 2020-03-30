@@ -8,6 +8,8 @@
 
 ## Minor changes and bug-fixes
 
+* Changed the default `min_block_size` to 40 throughout (#68, @russHyde)
+
 * Rewrote a test-helper function that compares two list-column-containing
   tibbles: necessitated by a change in dplyr=1.0 (#65, @russHyde)
 

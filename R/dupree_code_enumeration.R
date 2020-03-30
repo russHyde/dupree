@@ -192,7 +192,7 @@ tokenize_code_blocks <- function(block_df) {
 #'
 #' @noRd
 #'
-preprocess_code_blocks <- function(files, min_block_size = 20) {
+preprocess_code_blocks <- function(files, min_block_size = 40) {
   blocks <- files %>%
     import_parsed_code_blocks() %>%
     tokenize_code_blocks() %>%

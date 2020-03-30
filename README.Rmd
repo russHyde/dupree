@@ -48,7 +48,7 @@ A very lightweight approach is used:
 - The non-trivial symbols from each code-block are retained (for instance,
 really common symbols like `<-`, `,`, `+`, `(` are dropped);
 
-- Similarity between different blocks is calculated using stringdist::seq_sim
+- Similarity between different blocks is calculated using `stringdist::seq_sim`
 by longest-common-subsequence (symbol-identity is at whole-word level - so
 "my_data", "my_Data", "my.data" and "myData" are not considered to be identical
 in the calculation - and all non-trivial symbols have equal weight in the
@@ -66,8 +66,11 @@ code-block containing at least this many non-trivial symbols will be kept.
 You can install `dupree` from github with:
 
 ```{r gh-installation, eval = FALSE}
-# install.packages("devtools")
-devtools::install_github("russHyde/dupree")
+if (!"dupree" %in% installed.packages()) {
+  # Alternatively:
+  # install.packages("dupree")
+  remotes::install_github("russHyde/dupree")
+}
 ```
 
 ## Example
@@ -91,14 +94,15 @@ Any top-level code blocks that contain at least
 included in the above analysis (a token being a function or variable name, an
 operator etc; but ignoring comments, white-space and some really common tokens:
 `[](){}-+$@:,=`, `<-`, `&&` etc). To be more restrictive, you could consider
-larger code-blocks within just the `./R/` source code directory:
+larger code-blocks (increase `min_block_size`) within just the `./R/` source
+code directory:
 
 ```{r}
 # R-source code files in the ./R/ directory of the dupree package:
-source_files <- dir(path = "R", pattern = "*.R(md)*$", full.names = TRUE)
+source_files <- dir(path = "./R", pattern = "*.R(md)*$", full.names = TRUE)
 
-# analyse any code blocks that contain at least 40 non-trivial tokens
-dupree(source_files, min_block_size = 40)
+# analyse any code blocks that contain at least 50 non-trivial tokens
+dupree(source_files, min_block_size = 50)
 ```
 
 For each (sufficiently big) code block in the provided files, `dupree` will
@@ -129,7 +133,8 @@ dupree_dir(".", filter = "R/")
 # Analyse all R files except those in the tests / presentations directories:
 # `dupree_dir` uses grep-like arguments
 dupree_dir(
-  ".", filter = "tests|presentations", invert = TRUE
+  ".",
+  filter = "tests|presentations", invert = TRUE
 )
 ```
 
