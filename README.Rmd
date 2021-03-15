@@ -13,25 +13,8 @@ knitr::opts_chunk$set(
 ```
 
 <!-- badges: start -->
-[![Travis-CI Build Status](
-  https://travis-ci.org/russHyde/dupree.svg?branch=master
-  )
-](
-  https://travis-ci.org/russHyde/dupree
-)
-
-[![AppVeyor build status](
-  https://ci.appveyor.com/api/projects/status/github/russHyde/dupree?branch=master&svg=true
-)](
-  https://ci.appveyor.com/project/russHyde/dupree
-)
-
-[![Coverage Status](
-  https://img.shields.io/codecov/c/github/russHyde/dupree/master.svg
-)](
-  https://codecov.io/github/russHyde/dupree?branch=master
-)
-
+[![Codecov test coverage](https://codecov.io/gh/russHyde/dupree/branch/master/graph/badge.svg)](https://codecov.io/gh/russHyde/dupree?branch=master)
+[![R-CMD-check](https://github.com/russHyde/dupree/workflows/R-CMD-check/badge.svg)](https://github.com/russHyde/dupree/actions)
 <!-- badges: end -->
 
 # dupree

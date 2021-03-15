@@ -1,17 +1,10 @@
 
 <!-- README.md is generated from README.Rmd. Please edit the latter -->
-
 <!-- badges: start -->
 
-[![Travis-CI Build
-Status](https://travis-ci.org/russHyde/dupree.svg?branch=master)](https://travis-ci.org/russHyde/dupree)
-
-[![AppVeyor build
-status](https://ci.appveyor.com/api/projects/status/github/russHyde/dupree?branch=master&svg=true)](https://ci.appveyor.com/project/russHyde/dupree)
-
-[![Coverage
-Status](https://img.shields.io/codecov/c/github/russHyde/dupree/master.svg)](https://codecov.io/github/russHyde/dupree?branch=master)
-
+[![Codecov test
+coverage](https://codecov.io/gh/russHyde/dupree/branch/master/graph/badge.svg)](https://codecov.io/gh/russHyde/dupree?branch=master)
+[![R-CMD-check](https://github.com/russHyde/dupree/workflows/R-CMD-check/badge.svg)](https://github.com/russHyde/dupree/actions)
 <!-- badges: end -->
 
 # dupree
@@ -21,23 +14,23 @@ code within a set of R scripts.
 
 A very lightweight approach is used:
 
-  - The user provides a set of `*.R` and/or `*.Rmd` files;
+-   The user provides a set of `*.R` and/or `*.Rmd` files;
 
-  - All R-code in the user-provided files is read and code-blocks are
+-   All R-code in the user-provided files is read and code-blocks are
     identified;
 
-  - The non-trivial symbols from each code-block are retained (for
+-   The non-trivial symbols from each code-block are retained (for
     instance, really common symbols like `<-`, `,`, `+`, `(` are
     dropped);
 
-  - Similarity between different blocks is calculated using
+-   Similarity between different blocks is calculated using
     `stringdist::seq_sim` by longest-common-subsequence (symbol-identity
     is at whole-word level - so “my\_data”, “my\_Data”, “my.data” and
-    “myData” are not considered to be identical in the calculation -
-    and all non-trivial symbols have equal weight in the similarity
+    “myData” are not considered to be identical in the calculation - and
+    all non-trivial symbols have equal weight in the similarity
     calculation);
 
-  - Code-blocks pairs (both between and within the files) are returned
+-   Code-blocks pairs (both between and within the files) are returned
     in order of highest similarity
 
 To prevent the results being dominated by high-identity blocks
@@ -123,7 +116,7 @@ similar to the token “myData” than it is to “x”.
 If you find code-block-pairs with a similarity score much greater than
 0.5 there is probably some commonality that could be abstracted away.
 
------
+------------------------------------------------------------------------
 
 Note that you can do something similar using the functions `dupree_dir`
 and (if you are analysing a package) `dupree_package`.
