@@ -26,7 +26,7 @@ as.data.frame.dups <- function(x, ...) {
 #' @inheritParams   tibble::as_tibble
 #' @importFrom   tibble        as_tibble
 #'
-#' @export
+#' @exportS3Method
 #'
 
 # nolint start
