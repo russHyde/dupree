@@ -4,12 +4,11 @@
 ^README\.Rmd$
 ^README-.*\.png$
 ^TODO\.md$
-^\.travis\.yml$
 ^codecov\.yml$
 ^presentations$
-^appveyor\.yml$
 ^cran-comments.md$
 ^CRAN-RELEASE$
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
+^\.github$
