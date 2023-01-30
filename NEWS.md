@@ -1,5 +1,7 @@
 # dupree (development version)
 
+* Update the CI workflows for pkgdown, test-coverage and R CMD check
+
 # dupree 0.3.0
 
 ## Breaking changes
