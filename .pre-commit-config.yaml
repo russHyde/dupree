@@ -54,7 +54,8 @@ repos:
           (.*/|)WORDLIST|
           \.github/workflows/.*|
           data/.*|
-          docs/.*
+          docs/.*|
+          tests/testthat/testdata/.*
           )$
     -   id: readme-rmd-rendered
     -   id: parsable-R
