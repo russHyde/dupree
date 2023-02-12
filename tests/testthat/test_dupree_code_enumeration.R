@@ -92,7 +92,6 @@ test_that("Number of code blocks in imported files", {
 ###############################################################################
 
 test_that("Filtering by the number of symbols in the code-blocks", {
-
   # If there is less than `N` symbols in each input code-block, and
   # `min_block_size` is `N` then every code-block will be disregarded
   max_9_symbols <- file.path("testdata", "max_9_symbols.R")
