@@ -55,9 +55,13 @@ repos:
     -   id: no-browser-statement
     -   id: no-debug-statement
     -   id: deps-in-desc
+        exclude: >
+          (?x)^(
+            presentations/.*
+          )$
 -   repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0
-    hooks: 
+    hooks:
     -   id: check-added-large-files
         args: ['--maxkb=200']
     -   id: file-contents-sorter
