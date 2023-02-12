@@ -125,3 +125,9 @@ dupree_dir(
 # Analyse all R source code in the package (only looking at the ./R/ directory)
 dupree_package(".")
 ```
+
+## Developers
+
+Please use `pre-commit` (and install the R package `{precommit}`) locally if working on {dupree}.
+Installation and usage instructions can be found in the `{precommit}`
+["Get started" document](https://lorenzwalthert.github.io/precommit/articles/precommit.html).

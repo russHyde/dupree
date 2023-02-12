@@ -67,7 +67,7 @@ dupree(files)
 #>    file_a                           file_b block_a block_b line_a line_b   score
 #>    <chr>                            <chr>    <int>   <int>  <int>  <int>   <dbl>
 #>  1 R/dupree_classes.R               tests…      33       8     57     13 0.296  
-#>  2 tests/testthat/test_dupree_clas… tests…       8      10     13    118 0.248  
+#>  2 tests/testthat/test_dupree_clas… tests…       8      10     13    117 0.248  
 #>  3 R/dupree_classes.R               R/dup…      33      61     57    117 0.218  
 #>  4 tests/testthat/test_dupree_clas… tests…       8      11     13     64 0.216  
 #>  5 R/dupree_classes.R               R/dup…      33      88     57    180 0.215  
@@ -163,3 +163,10 @@ dupree_package(".")
 #> 5 ./R/dupree_classes.R              ./R/d…      88      48    180     90 0.111  
 #> 6 ./R/dupree_code_enumeration.R     ./tes…      48       1     90      1 0.00298
 ```
+
+## Developers
+
+Please use `pre-commit` (and install the R package `{precommit}`)
+locally if working on {dupree}. Installation and usage instructions can
+be found in the `{precommit}` [“Get started”
+document](https://lorenzwalthert.github.io/precommit/articles/precommit.html).

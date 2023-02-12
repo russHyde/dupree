@@ -29,7 +29,6 @@ test_that("`dupree_package` fails early when passed a nonexisting dir", {
 })
 
 test_that("`dupree_package` fails when passed a non-R package structure", {
-
   # There must be a DESCRIPTION file present
   d <- tempfile(pattern = "not_an_r_package")
   dir.create(d)

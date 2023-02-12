@@ -4,6 +4,8 @@
 * use lintr >= 3, and update .lintr config file
 * lint the package in CI
 * Convert default git branch to 'main' (#84, @russHyde)
+* Replace PR commands for documenting/styling the code with `pre-commit` rules for styling,
+  linting, spell-checking etc (#83, @russHyde)
 
 # dupree 0.3.0
 
