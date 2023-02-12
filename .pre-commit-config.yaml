@@ -62,7 +62,8 @@ repos:
     -   id: deps-in-desc
         exclude: >
           (?x)^(
-            presentations/.*
+            presentations/.*|
+            inst/hooks/.*
           )$
 -   repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0
@@ -77,6 +78,13 @@ repos:
             .*\.Rd|
             docs/.*
           )$
+-   repo: local
+    hooks:
+    -   id: local-lintr
+        name: Run lintr with global R environment
+        entry: inst/hooks/local/local-lintr.R
+        language: script
+        files: '(\.[rR]profile|\.R|\.Rmd|\.Rnw|\.r|\.rmd|\.rnw)$'
 -   repo: https://github.com/pre-commit-ci/pre-commit-ci-config
     rev: v1.5.1
     hooks:
