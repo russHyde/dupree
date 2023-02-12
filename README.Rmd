@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
 ```
 
 <!-- badges: start -->
-[![Codecov test coverage](https://codecov.io/gh/russHyde/dupree/branch/master/graph/badge.svg)](https://codecov.io/gh/russHyde/dupree?branch=master)
+[![Codecov test coverage](https://codecov.io/gh/russHyde/dupree/branch/main/graph/badge.svg)](https://codecov.io/gh/russHyde/dupree?branch=main)
 [![R-CMD-check](https://github.com/russHyde/dupree/workflows/R-CMD-check/badge.svg)](https://github.com/russHyde/dupree/actions)
 <!-- badges: end -->
 
