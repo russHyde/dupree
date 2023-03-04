@@ -1,0 +1,134 @@
+---
+title: "{dupree} and cleaning up code"
+subtitle: "Presented to R4DS project club"
+date: "2023-03-11"
+format: revealjs
+execute: 
+  echo: true
+author: Russ Hyde
+---
+
+## Background and Links
+
+### Today's package
+
+- [https://github.com/russHyde/dupree](https://github.com/russHyde/dupree)
+
+### Me
+
+- [Twitter@haematobot](https://twitter.com/haematobot)
+- [LinkedIn](https://www.linkedin.com/in/russ-hyde-681731257/)
+- Data Scientist at [Jumping Rivers](https://www.jumpingrivers.com/)
+- R4DS mentor
+- Horder of shinyverse bookclubs
+- [Leeds (UK) Data Science](https://www.meetup.com/leeds-data-science-meetup/) co-organiser
+
+## Preamble
+
+```{r}
+# Dependencies:
+# - lintr, dplyr, purrr, tibble, magrittr, methods, stringdist
+if (!"dupree" %in% installed.packages()) {
+  install.packages("dupree")
+}
+
+suppressPackageStartupMessages({
+  library(dupree)
+})
+```
+
+## Code Smells & Architectural Ideals
+
+_"The most common design problems result from code that_
+
+- _Is duplicated_
+
+- _Is unclear_
+
+- _Is complicated"_
+
+Quote: Kerievsky 'Refactoring to Patterns'
+
+. . .
+
+See also
+
+- Fowler 'Refactoring',
+
+- Martin 'Clean Code'; and
+
+- Jenny Bryan's talk 'Code smells and feels'
+
+## Types of duplication
+
+<!--
+  perhaps move the types-of-duplication to more R-specific part
+  later in the talk
+  
+  here mention why duplication happens:
+  - copy/paste
+  - accidental duplication (you/colleague don't realise that some function already exists)
+  - well-written code should look uniform
+-->
+
+```{r, echo = FALSE}
+url <- "https://static.fjcdn.com/large/pictures/9d/b7/9db733_1672275.gif"
+```
+
+![](`r url`){ width=80% }
+
+- Trivial stuff (`library(dplyr)`)
+
+- Copy/paste-driven development (similar logic & code)
+
+- Functional duplication (same logic, different code)
+
+- ? False duplication (different logic, similar code)
+
+## How to detect duplication?
+
+- Python
+    - `pylint` (looks for identical _lines_ between files)
+
+- Java / C++ / C# etc
+    - lots of choice (code structure / identity)
+
+- R: nothing for source code (AFAIK)
+
+    - String / Sequence similarity: `stringdist`
+    - Text analysis: `ropensci:textreuse`
+    - (But tools like: `goodpractice`, `lintr`, `styler`, `cyclocomp`, `pkgnet`)
+
+# `dupree`
+
+## `dupree`
+
+- [https://github.com/russHyde/dupree](https://github.com/russHyde/dupree)
+
+- All community input is welcome
+
+- Most data input is welcome:
+    - sets of files (`dupree()`)
+    - a directory (`dupree_dir()`)
+    - or a package (`dupree_package()`)
+
+## Duplication in a script
+
+```{r}
+my_script <- "duplication_heavy.R"
+
+# min_block_size:
+# - used to prevent dupree analysing really small code blocks
+
+dupree(my_script, min_block_size = 3) |>
+  as_tibble() |>
+  dplyr::select(-file_a, -file_b)
+```
+
+## Duplication in a script (cont.) {.smaller}
+
+```{r}
+#| echo = TRUE,
+#| eval = FALSE,
+#| file = my_script
+```
