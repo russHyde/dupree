@@ -1,0 +1,381 @@
+---
+title: "{dupree} and cleaning up code"
+subtitle: "Presented to R4DS project club"
+date: "2023-03-11"
+format: revealjs
+execute: 
+  echo: true
+author: Russ Hyde
+---
+
+## Today's package
+
+- [https://github.com/russHyde/dupree](https://github.com/russHyde/dupree)
+
+![dupree overview](20230311-r4ds-dupree_figures/dupree-overview.png)
+
+## Me
+
+- [Twitter@haematobot](https://twitter.com/haematobot)
+- [LinkedIn](https://www.linkedin.com/in/russ-hyde-681731257/)
+- Data Scientist at [Jumping Rivers](https://www.jumpingrivers.com/)
+- R4DS mentor
+- Horder of shinyverse bookclubs
+- [Leeds Data Science](https://www.meetup.com/leeds-data-science-meetup/) co-organiser
+
+## Preamble
+
+```{r}
+# Dependencies:
+# - lintr, dplyr, purrr, tibble, magrittr, methods, stringdist
+if (!"dupree" %in% installed.packages()) {
+  install.packages("dupree")
+}
+
+suppressPackageStartupMessages({
+  library(dupree)
+})
+```
+
+## Code Smells & Architectural Ideals
+
+_"The most common design problems result from code that_
+
+- _Is duplicated_
+
+- _Is unclear_
+
+- _Is complicated"_
+
+Quote: Kerievsky 'Refactoring to Patterns'
+
+. . .
+
+See also
+
+- Fowler 'Refactoring',
+
+- Martin 'Clean Code'; and
+
+- Jenny Bryan's talk 'Code smells and feels'
+
+## Types of duplication
+
+<!--
+  perhaps move the types-of-duplication to more R-specific part
+  later in the talk
+  
+  here mention why duplication happens:
+  - copy/paste
+  - accidental duplication (you/colleague don't realise that some function already exists)
+  - well-written code should look uniform
+-->
+
+```{r, echo = FALSE}
+url <- "https://static.fjcdn.com/large/pictures/9d/b7/9db733_1672275.gif"
+```
+
+![](`r url`){ width=80% }
+
+- Trivial stuff (`library(dplyr)`)
+
+- Copy/paste-driven development (similar logic & code)
+
+- Functional duplication (same logic, different code)
+
+- ? False duplication (different logic, similar code)
+
+## How to detect duplication?
+
+- Python
+    - `pylint` (looks for identical _lines_ between files)
+
+- Java / C++ / C# etc
+    - lots of choice (code structure / identity)
+
+- R: nothing for source code (AFAIK)
+
+    - String / Sequence similarity: `stringdist`
+    - Text analysis: `ropensci:textreuse`
+    - (But tools like: `goodpractice`, `lintr`, `styler`, `cyclocomp`, `pkgnet`)
+
+# `dupree`
+
+## `dupree`
+
+- [https://github.com/russHyde/dupree](https://github.com/russHyde/dupree)
+
+- All community input is welcome
+
+- Most data input is welcome:
+    - sets of files (`dupree()`)
+    - a directory (`dupree_dir()`)
+    - or a package (`dupree_package()`)
+
+## Duplication in a script {.smaller}
+
+```{r, echo = FALSE}
+my_script <- "duplication_heavy.R"
+```
+
+```{r}
+#| echo = TRUE,
+#| eval = FALSE,
+#| file = my_script
+```
+
+## Duplication in a script (cont.)
+
+```{r}
+my_script <- "duplication_heavy.R"
+
+# min_block_size:
+# - used to prevent dupree analysing really small code blocks
+
+dupree(my_script, min_block_size = 3) |>
+  as_tibble() |>
+  dplyr::select(-file_a, -file_b)
+```
+
+
+## Mechanics: Start ^[The steps presented have been reordered for clarity]
+
+```{r}
+#| eval: false
+library(dplyr)
+data(diamonds)
+
+diamonds %>%
+  filter(clarity %in% c("SI1", "SI2")) %>%
+  group_by(color) %>%
+  summarise(m_price = mean(price), sd_price = sd(price))
+
+diamonds %>%
+  filter(cut >= "Very Good") %>%
+  group_by(color) %>%
+  summarise(m_price = mean(price), sd_price = sd(price))
+```
+
+## Mechanics: Find Blocks
+
+```{r}
+#| eval: false
+#| code-line-numbers: 1|2|4-7|9-12
+library(dplyr) # Block 1
+data(diamonds) # Block 2
+
+diamonds %>% # Block 3
+  filter(clarity %in% c("SI1", "SI2")) %>%
+  group_by(color) %>%
+  summarise(m_price = mean(price), sd_price = sd(price))
+
+diamonds %>% # Block 4
+  filter(cut >= "Very Good") %>%
+  group_by(color) %>%
+  summarise(m_price = mean(price), sd_price = sd(price))
+```
+
+## Mechanics: Drop Small Blocks
+
+```{r}
+#| eval: false
+#| code-line-numbers: 1-2
+# library(dplyr) -- removed
+# data(diamonds) -- removed
+
+diamonds %>% # Block 3
+  filter(clarity %in% c("SI1", "SI2")) %>%
+  group_by(color) %>%
+  summarise(m_price = mean(price), sd_price = sd(price))
+
+diamonds %>% # Block 4
+  filter(cut >= "Very Good") %>%
+  group_by(color) %>%
+  summarise(m_price = mean(price), sd_price = sd(price))
+```
+
+## Mechanics: Drop Trivial Symbols
+
+```{r}
+#| eval: false
+#| code-line-numbers: 4-7|9-12
+# library(dplyr) -- removed
+# data(diamonds) -- removed
+
+diamonds %>%
+  filter clarity %in% c "SI1" "SI2" %>%
+  group_by color %>%
+  summarise m_price mean price sd_price sd price
+
+diamonds %>%
+  filter cut >= "Very Good" %>%
+  group_by color %>%
+  summarise m_price mean price sd_price sd price
+```
+
+## Mechanics: Enumerate Symbols
+
+```{r}
+#| eval: false
+#| code-line-numbers: 4-7|9-12
+# library(dplyr) -- removed
+# data(diamonds) -- removed
+
+1 2
+  3 4 5 6 7 8 2
+  9 10 2
+  11 12 13 14 15 16 14
+
+1 2
+  3 17 18 19 2
+  9 10 2
+  11 12 13 14 15 16 14
+```
+
+```
+diamonds -> 1
+%>% -> 2
+and so on
+```
+
+## Mechanics: Align
+
+```{.r}
+# Longest common substring
+1 2 3 4 5 6 7 8           2 9 10 2 11 12 13 14 15 16 14
+| | |                     | | |  | |  |  |  |  |  |  |
+1 2 3           17 18 19  2 9 10 2 11 12 13 14 15 16 14
+```
+
+```{r}
+s1 <- c(1, 2, 3, 4, 5, 6, 7, 8, 2, 9, 10, 2, 11, 12, 13, 14, 15, 16, 14)
+s2 <- c(1, 2, 3, 17, 18, 19, 2, 9, 10, 2, 11, 12, 13, 14, 15, 16, 14)
+
+stringdist::seq_sim(
+  list(s1), list(s2), method = "lcs"
+)
+```
+
+## Duplication in a package
+
+Downloaded the source code for `lintr` from github using {gert}.
+
+```{r, message = FALSE, results="hide"}
+# temporary dir for storing `lintr`'s source code
+lintr_path <- file.path("lintr")
+
+if (! file.exists(lintr_path)){
+  gert::git_clone(
+    "https://github.com/r-lib/lintr",
+    lintr_path
+  )
+}
+```
+
+## Duplication in a package (cont)
+
+Ran dupree on `lintr`
+
+```{r}
+dups <- dupree::dupree_package(
+  lintr_path, min_block_size = 40
+)
+```
+
+```{r}
+class(dups)
+```
+
+## Duplication in a package (cont)
+
+```{r}
+dup_df <- dupree::as_tibble(dups)
+dup_df
+```
+
+## Duplication in a package (cont)
+
+```{r, fig.height=3, echo = FALSE}
+ggplot2::qplot(
+  x = seq(nrow(dup_df)), y = dup_df[["score"]],
+  xlab = "Index",
+  ylab = "Similarity score:\nversus closest matching block"
+)
+```
+
+## Duplication in a package (cont) {.smaller}
+
+```{r}
+library(dplyr)
+
+dup_df |>
+  filter(score > 0.4 & file_a != file_b) |>
+  mutate_at(c("file_a", "file_b"), basename) |>
+  head()
+```
+
+## Visualisation of duplication results
+
+We make a tidygraph structure from the similarity scores
+
+```{r}
+library(dplyr)
+library(tidygraph)
+
+dup_graph <- dup_df |>
+  # keep code-block pairs with moderate similarity:
+  filter(score > 0.4) |>
+  transmute(
+    # indicate code-blocks by filename and start-line
+    from = paste(basename(file_a), line_a),
+    to = paste(basename(file_b), line_b),
+    type = "duplication",
+    score = score
+  ) |>
+  as_tbl_graph() |>
+  # distinguish the file each code block came from
+  mutate(filename = gsub("(.*) \\d+$", "\\1", name))
+```
+
+## Visualisation of duplication results (cont)
+
+```{r}
+library(ggraph)
+
+graph_image <- dup_graph |>
+  ggraph(layout = "gem") +
+  geom_edge_link(
+    aes(colour = type, edge_width = score)
+  ) +
+  geom_node_point(
+    aes(colour = filename), size = 4, show.legend = FALSE
+  ) +
+  theme_graph()
+```
+
+## Visualisation of duplication results (cont)
+
+```{r}
+graph_image
+```
+
+## Visualisation of duplication results (cont)
+
+```{r}
+graph_image +
+  geom_node_text(aes(label = name), repel = TRUE)
+```
+
+## What's in a name?
+
+::: {.incremental}
+
+- dup
+
+- r
+
+- ee
+
+- [dupree](https://en.wikipedia.org/wiki/Champion_Jack_Dupree)
+
+:::
