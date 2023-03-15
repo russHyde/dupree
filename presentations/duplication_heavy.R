@@ -11,6 +11,10 @@ diamonds %>%
   group_by(color) %>%
   summarise(m_price = mean(price), sd_price = sd(price))
 
+diamonds |>
+  filter(cut >= "Very Good") |>
+  group_by(color) |>
+  summarise(m_price = mean(price), sd_price = sd(price))
 
 # note that dupree can't tell that the following code is logically
 # the same as the preceding code
