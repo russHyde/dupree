@@ -46,7 +46,7 @@ tibble::as_tibble
 
 # nocov start
 print.dups <- function(x, ...) {
-  print(as_tibble(x))
+  print(as_tibble(x), ...)
   invisible(x)
 }
 # nocov end
