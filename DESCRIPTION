@@ -6,7 +6,7 @@ Author: Russ Hyde
 Maintainer: Russ Hyde <russ.hyde.data@gmail.com>
 Description: Identifies code blocks that have a high level of similarity
   within a set of R files.
-URL: https://github.com/russHyde/dupree
+URL: https://russhyde.github.io/dupree/, https://github.com/russHyde/dupree
 BugReports: https://github.com/russHyde/dupree/issues
 License: MIT + file LICENSE
 Encoding: UTF-8
