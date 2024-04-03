@@ -1,5 +1,7 @@
 # dupree (development version)
 
+* Pass print(dups, ...) dots to print(tibble, ...) so that the number of output lines can be
+  specified in the output (thanks @mikemahoney218)
 * Update the CI workflows for pkgdown, test-coverage and R CMD check
 * use lintr >= 3, and update .lintr config file
 * Fixed linting across package

@@ -31,8 +31,10 @@ expect_equivalent_tbl <- function(object, expected, ..., info = NULL) {
   )
 }
 
-get_empty_dups_tbl <- function() {
-  tibble::tibble(
+get_dups_tbl <- function(
+  ...
+) {
+  empty_tbl <- tibble::tibble(
     file_a = character(0),
     file_b = character(0),
     block_a = integer(0),
@@ -41,10 +43,24 @@ get_empty_dups_tbl <- function() {
     line_b = integer(0),
     score = numeric(0)
   )
+
+  user_tbl <- tibble::tibble(...)
+
+  common_cols <- intersect(colnames(user_tbl), colnames(empty_tbl))
+
+  if (length(common_cols) == 0) {
+    return(dplyr::cross_join(user_tbl, empty_tbl))
+  }
+
+  dplyr::left_join(
+    user_tbl,
+    empty_tbl,
+    by = common_cols
+  )
 }
 
 get_empty_dups_df <- function() {
-  as.data.frame(get_empty_dups_tbl(), stringsAsFactors = FALSE)
+  as.data.frame(get_dups_tbl(), stringsAsFactors = FALSE)
 }
 
 ###############################################################################
