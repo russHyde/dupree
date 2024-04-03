@@ -6,10 +6,11 @@ as_dups <- function(x) {
   if (methods::is(x, "dups")) {
     return(x)
   }
-  structure(
-    list(dups_df = x),
-    class = "dups"
-  )
+
+  dups <- list(dups_df = x)
+  class(dups) <- "dups"
+
+  dups
 }
 
 #' as.data.frame method for `dups` class
