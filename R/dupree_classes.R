@@ -212,7 +212,7 @@ find_indexes_of_best_matches <- function(enum_codes, method = "lcs", ...) {
       index_b = .data[["temp"]]
     ) %>%
     dplyr::select(
-      -.data[["temp"]]
+      -"temp"
     ) %>%
     # only return each code-block pair once
     unique() %>%
