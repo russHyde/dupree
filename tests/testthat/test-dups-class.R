@@ -15,7 +15,7 @@ test_that("`dups` object can be converted to `data.frame`", {
     info = "dups -> dups conversion is an identity map"
   )
 
-  y <- get_empty_dups_tbl()
+  y <- get_dups_tbl()
   dups <- as_dups(y)
 
   expect_equal(
