@@ -2,6 +2,7 @@
 
 * Update the CI workflows for pkgdown, test-coverage and R CMD check
 * use lintr >= 3, and update .lintr config file
+* Fixed linting across package
 * lint the package in CI
 * Convert default git branch to 'main' (#84, @russHyde)
 
