@@ -18,7 +18,7 @@ Suggests:
     rmarkdown,
     covr
 Imports:
-    dplyr,
+    dplyr (>= 1.1.0),
     purrr,
     tibble,
     magrittr,

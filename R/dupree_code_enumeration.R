@@ -125,9 +125,12 @@ enumerate_code_symbols <- function(df) {
 #' @noRd
 #'
 summarise_enumerated_blocks <- function(df) {
+  grouping_cols <- c("file", "block", "start_line")
   df %>%
     dplyr::group_by(
-      .data[["file"]], .data[["block"]], .data[["start_line"]]
+      dplyr::across(
+        dplyr::all_of(grouping_cols)
+      )
     ) %>%
     dplyr::summarise(
       enumerated_code = list(c(.data[["symbol_enum"]])),
