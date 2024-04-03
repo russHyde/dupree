@@ -9,6 +9,5 @@ linters: linters_with_defaults(
 exclusions: list(
   "inst/extdata/duplicated.R",
   "tests/testthat.R",
-  # ? should be able to exclude a directory in lintr
-  "tests/testthat/testdata/anRpackage/R/anRpackage-internal.R"
+  "tests/testthat/testdata"
   )
